@@ -1,0 +1,19 @@
+FCC assignment location is:
+https://www.freecodecamp.com/challenges/build-a-tic-tac-toe-game
+
+Certificate: Front-end Developer
+Level: Advanced
+
+=== { User stories } ===
+User Story: I can play a game of Tic Tac Toe with the computer.
+User Story: My game will reset as soon as it's over so I can play again.
+User Story: I can choose whether I want to play as X or O.
+
+=== { Notes before startingn } ===
+
+=== { To-do list } ===
+
+- copy all code to codepen
+- check cross browser compatibility
+
+=== { Build notes } ===
