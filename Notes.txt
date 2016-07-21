@@ -11,6 +11,26 @@ User Story: I can choose whether I want to play as X or O.
 
 === { Notes before startingn } ===
 
+Functionality of the app broken up in pieces.
+- draw the board
+- draw x or 0
+- flash winning 
+- clear board
+- settings menu
+
+- current state of the game in an array
+	- possible win, for AI
+
+- two users should be able to play the game, or user and AI
+- waiting for a move
+- checking for a win
+- AI, analysis of the next move
+	- the more games played the less chance a user has to win (95-5%)
+- O always begins or random?
+
+ph3onixfire
+
+
 === { To-do list } ===
 
 - copy all code to codepen
