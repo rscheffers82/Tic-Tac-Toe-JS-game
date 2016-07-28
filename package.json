@@ -1,0 +1,24 @@
+{
+  "name": "tic-tac-toe-js",
+  "version": "1.0.0",
+  "description": "Advanced assignment of the Front End Developer curriculum on FreeCodeCamp",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rscheffers82/Tic-Tac-Toe-JS-game.git"
+  },
+  "author": "Roy Scheffers",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rscheffers82/Tic-Tac-Toe-JS-game/issues"
+  },
+  "homepage": "https://github.com/rscheffers82/Tic-Tac-Toe-JS-game#readme",
+  "devDependencies": {
+    "browser-sync": "^2.13.0",
+    "gulp": "^3.9.1",
+    "gulp-sass": "^2.3.2"
+  }
+}
