@@ -3,7 +3,7 @@
 
 /* Stylesheet for ... App */
 body {
-  background: #FFFAD5;
+  background: #fafafc;
   color: black; }
 
 .wrapper {
@@ -13,9 +13,9 @@ body {
   text-align: center; }
 
 .header {
+  background: #08A19F;
   display: table-row;
-  height: 1px;
-  background: #FFD34E; }
+  height: 1px; }
 
 .main {
   height: 100%;
@@ -27,7 +27,7 @@ body {
 
 .sidebar {
   width: 100px;
-  background: #BD4932; }
+  background: #08A19F; }
 
 .footer {
   display: table-row;
@@ -58,9 +58,22 @@ html,
 body {
   height: 100%; }
 
+.tile img {
+  display: block; }
+
 /* === Custom styling depending on the project === */
 .content {
   vertical-align: middle; }
+
+.players {
+  text-align: left;
+  display: inline-block;
+  margin-right: 10px; }
+
+.draw {
+  display: inline-block;
+  position: relative;
+  top: -25%; }
 
 .board {
   max-width: 350px;
@@ -70,7 +83,7 @@ body {
 .tile {
   display: inline-block;
   background-color: #00ff22;
-  background-image: linear-gradient(#fafafc 2px, #ff3300 20px, #fafafc 90px);
+  background-image: linear-gradient(#fafafc 2px, #9700BA 20px, #fafafc 90px);
   width: 100px;
   height: 100px;
   border-radius: 10px;
