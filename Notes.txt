@@ -12,10 +12,10 @@ User Story: I can choose whether I want to play as X or O.
 === { Notes before startingn } ===
 
 Functionality of the app broken up in pieces.
-- draw the board
-- draw x or 0
+v draw the board
+v draw x or 0
 - flash winning 
-- clear board
+v clear board
 - settings menu
 
 - current state of the game in an array
@@ -32,8 +32,18 @@ ph3onixfire
 
 
 === { To-do list } ===
-
-- copy all code to codepen
+- on startup, darken screen and choose
+	- o or x
+	- your name
+	- difficulty
+	* lightbox code: http://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_overlay
+- on win or draw, darken screen and show the message and score
+- flash winning
+- flash draw (all)
+- general styling and background
+- AI
+- AI gets better after more games
 - check cross browser compatibility
+- post in Facebook and Forums
 
 === { Build notes } ===
