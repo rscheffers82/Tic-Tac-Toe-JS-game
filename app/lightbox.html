@@ -51,8 +51,12 @@ body {
     border-radius: 5px 5px 0 0;
     display: block;
     font-size: 1.2em;
-    margin: -10px;
+    margin: -10px -10px 10px -10px;
     padding: 10px 0;
+}
+
+.content{
+    display: block;
 }
 
 /* for single player view */
@@ -102,7 +106,7 @@ body {
     width: 100%;
 }
 
-/* for multi player view */
+/* Styles for multi player view */
 .less-margin{
     margin: 0px;
 }
@@ -120,6 +124,24 @@ body {
     vertical-align: middle;
 }
 
+/*  Styles for Score view */
+.summary{
+    font-size: 2em;
+}
+.result-players{
+    font-size: 0.5em;
+}
+.right{
+    text-align: right;
+}
+.left{
+    text-align: left;
+}
+.small{
+    width: 50%;
+}
+
+
 @media screen and (max-height: 450px) {
   .overlay a {font-size: 15px}
   .closebtn {
@@ -133,20 +155,17 @@ body {
 
 <div id="myNav" class="overlay">
     <div class="overlay-box">
-        <div class="caption">
-        </div>
-        <div class="content">
-        
-
-        </div>
+        <div class="caption"></div>
+        <div class="content"></div>
     </div>
 </div>
 
 <h2>Fullscreen Overlay Nav Example</h2>
 <p>Click on the element below to open the fullscreen overlay navigation menu.</p>
 <p>In this example, the navigation menu will slide in, from left to right:</p>
-<span style="font-size:30px;cursor:pointer" onclick="showBox()">☰ open</span>
+<span style="font-size:30px;cursor:pointer" onclick="showBox()">☰ Open</span><br>
 
+<span style="font-size:30px;cursor:pointer" onclick="showScore()">☰ Score</span>
 <script>
 
 var loadSingle = function(){
@@ -199,11 +218,30 @@ var loadMulti = function(){
     $('.content').append(content);
 }
 var showScore = function(){
-    var title = 'WIN...';
-    var content = '';
+    $('.caption').empty();
+    $('.content').empty();
+    var title = 'Score';
+    var content = '<div class="summary">' +
+        'Player 1 wins...' +
+        '<div class="tab small">' +
+           '<div class="result-players tr">' +
+                '<div class="td left">Roy Scheffers:</div><div class="td right">7</div>' +
+            '</div>' +
+            '<div class="result-players tr">' +
+                '<div class="td left">IA (easy)</div><div class="td right">2</div>' +
+            '</div>' +
+            '<div class="result-players tr">' +
+                '<div class="td left">Draw:</div><div class="td right">15</div>' +
+            '</div>' +
+        '</div>' +
+    '</div>' +
+    '<button type="button" onclick="start()">Play again...</button>' +
+    '<button type="button" onclick="start()">Exit</button>';
 
     $('.caption').append(title);
     $('.content').append(content);
+
+    $('#myNav').css('height', '100%');
 }
 
 function showBox() {
