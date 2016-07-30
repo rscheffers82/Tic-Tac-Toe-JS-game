@@ -9,35 +9,35 @@ User Story: I can play a game of Tic Tac Toe with the computer.
 User Story: My game will reset as soon as it's over so I can play again.
 User Story: I can choose whether I want to play as X or O.
 
-=== { Notes before startingn } ===
+=== { Notes before starting } ===
 
 Functionality of the app broken up in pieces.
 v draw the board
 v draw x or 0
-- flash winning 
 v clear board
-- settings menu
+- flash winning 
 
-- current state of the game in an array
+- settings menu
+- AI maximin algorithm
+
+v current state of the game in an array
 	- possible win, for AI
 
-- two users should be able to play the game, or user and AI
-- waiting for a move
-- checking for a win
+v two users should be able to play the game, or user and AI
+v waiting for a move
+v checking for a win
 - AI, analysis of the next move
 	- the more games played the less chance a user has to win (95-5%)
-- O always begins or random?
-
-ph3onixfire
-
 
 === { To-do list } ===
 - on startup, darken screen and choose
-	- o or x
-	- your name
-	- difficulty
+	v o or x
+	v your name
+	v difficulty
 	* lightbox code: http://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_overlay
+- add x or o choice
 - on win or draw, darken screen and show the message and score
+- understand AI / maximin algorithm
 - flash winning
 - flash draw (all)
 - general styling and background
@@ -47,3 +47,8 @@ ph3onixfire
 - post in Facebook and Forums
 
 === { Build notes } ===
+
+IA articles -> minimax algorithm
+http://mostafa-samir.github.io/Tic-Tac-Toe-AI/
+http://neverstopbuilding.com/minimax
+https://en.wikipedia.org/wiki/Minimax
