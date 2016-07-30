@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<style>
+body {
+    margin: 0;
+    font-family: 'Lato', sans-serif;
+}
+
+.overlay {
+    height: 0;
+    width: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.7);
+    overflow-x: hidden;
+    transition: 0.5s;
+}
+
+.overlay-box {
+    position: relative;
+    top: 10%;
+    width: 50%;
+    min-width: 350px;
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+    background-color: #fafafc;
+    padding: 10px;
+    border: 1px solid #222223;
+    border-radius: 5px;
+    -webkit-box-shadow: 2px 2px 3px 1px rgba(250,250,252,0.75);
+    -moz-box-shadow: 2px 2px 3px 1px rgba(250,250,252,0.75);
+    box-shadow: 2px 2px 3px 1px rgba(250,250,252,0.75);
+}
+
+.overlay-box p{
+    padding: 10px 0;
+}
+
+.caption{
+    background-color: #d1c630;
+    background:
+        linear-gradient(
+            #d1c630 38px, #514D13
+        );
+    border-radius: 5px 5px 0 0;
+    display: block;
+    font-size: 1.2em;
+    margin: -10px;
+    padding: 10px 0;
+}
+
+/* for single player view */
+.pl{
+    padding: 5px 20px;
+    margin: 5px 10px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+.pl:hover{
+    background-color: #ded233;
+    border-radius: 25px 25px 5px 5px;
+}
+.pl-selected{
+     background-image: 
+        linear-gradient(
+            #d1c630 5px, #ded233 10px, #fafafc 30px, #d1c630 35px);
+    border-radius: 25px 25px 5px 5px;
+    padding: 5px 20px;
+    margin: 5px 10px;
+    cursor: default;
+    transition: 0.5s;
+}
+
+.icon{
+    border: 1px solid #fafafc;
+    margin-left: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+.icon:hover{
+    border: 1px solid #222223;
+    border-radius: 10px;
+}
+.icon-selected{
+    border: 1px solid #222223;
+    border-radius: 10px;
+    background-color: #ececef;
+    cursor: default;
+    transition: 0.5s;
+}
+
+.note {
+    font-style: italic;
+    font-size: .7em;
+    margin: -35px 0 -10px;
+    width: 100%;
+}
+
+/* for multi player view */
+.less-margin{
+    margin: 0px;
+}
+.tab{
+    display: table;
+    width: 80%;
+    margin: 0 auto;
+    padding: 30px 0 15px;
+}
+.tr{
+    display: table-row;
+}
+.td{
+    display: table-cell;
+    vertical-align: middle;
+}
+
+@media screen and (max-height: 450px) {
+  .overlay a {font-size: 15px}
+  .closebtn {
+    font-size: 40px !important;
+    top: 15px;
+    right: 35px;
+  }
+}
+</style>
+<body>
+
+<div id="myNav" class="overlay">
+    <div class="overlay-box">
+        <div class="caption">
+        </div>
+        <div class="content">
+        
+
+        </div>
+    </div>
+</div>
+
+<h2>Fullscreen Overlay Nav Example</h2>
+<p>Click on the element below to open the fullscreen overlay navigation menu.</p>
+<p>In this example, the navigation menu will slide in, from left to right:</p>
+<span style="font-size:30px;cursor:pointer" onclick="showBox()">☰ open</span>
+
+<script>
+
+var loadSingle = function(){
+    $('.caption').empty();
+    $('.content').empty();
+    var title = '<span class="pl pl-selected" id="true">Single-player</span> | <span class="pl" id="false">Multi-player</span>';
+    var content = '<p>Player: <i class="note">(optional)</i> <input type="text"></p>' +
+        '<p>' +
+            '<img class="icon icon-selected" id="x" src="images/x.png">' +
+            '<img class="icon" id="o" src="images/o.png"">' +
+        '</p>' +
+        '<p class="note">* x starts the first game</p>' +
+        '<p>Difficulty: ' +
+            '<select name="difficulty">' +
+                '<option value="75">HARD:   Face a butt-kicking AI</option>' +
+                '<option value="50">MEDIUM: AI lets you win once in a while ;)</option>' +
+                '<option value="25">EASY:   If you are lacking courage</option>' +
+            '</select>' +
+        '</p>' +
+        '<button type="button" onclick="start()">Let\'s get started...</button>';
+
+    $('.caption').append(title);
+    $('.content').append(content);
+}
+
+var loadMulti = function(){
+    $('.caption').empty();
+    $('.content').empty();
+    var title = '<span class="pl" id="true">Single-player</span> | <span class="pl pl-selected" id="false">Multi-player</span>';
+    var content = '<div class="tab">' +
+        '<div class="tr">' +
+            '<div class="td"><img class="icon" id="x" src="images/x.png"></div>' +
+                '<div class="td">' +
+                    '<div>Player 1: </div><input type="text">' +
+                    '<div class="note less-margin">* x starts the first game</div>' +
+                '</div>' +
+            '</div>' +
+
+            '<div class="tr">' +
+                '<div class="td"><img class="icon" id="o" src="images/o.png"">' +
+                '</div>' +
+                '<div class="td">' +
+                    '<div>Player 2: </div><input type="text"></div>' +
+            '</div>' +
+        '</div>' +
+        
+        '<button type="button" onclick="start()">Let\'s get started...</button>';
+
+    $('.caption').append(title);
+    $('.content').append(content);
+}
+var showScore = function(){
+    var title = 'WIN...';
+    var content = '';
+
+    $('.caption').append(title);
+    $('.content').append(content);
+}
+
+function showBox() {
+    loadSingle();
+    //loadMulti();
+    $('#myNav').css('height', '100%');
+}
+
+function start() {
+    $('#myNav').css('height', '0%');
+}
+
+$('.caption').on('click', '.pl', function(e){
+    console.log(this.id);
+    if (this.id === 'true') loadSingle();
+    else if (this.id === 'false' ) loadMulti();
+});
+
+$('.content').on('click', '.icon' ,function(e){
+    console.log(e);
+
+    var cName = e.currentTarget.className;
+    $('.' + cName).removeClass(cName + '-selected');
+    $('#' + this.id).addClass(cName + '-selected');
+});
+
+</script>
+     
+</body>
+</html>
