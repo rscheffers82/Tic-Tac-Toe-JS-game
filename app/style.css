@@ -69,11 +69,6 @@ body {
   display: inline-block;
   margin-right: 10px; }
 
-.draw {
-  display: inline-block;
-  position: relative;
-  top: -25%; }
-
 .board {
   max-width: 350px;
   border: 1px solid #222223;
@@ -164,15 +159,17 @@ select {
   cursor: default;
   transition: 0.5s; }
 
-.icon {
+.icon,
+.iconSinglePlay {
   border: 1px solid #fafafc;
   margin: 0px 5px 10px 0px;
-  cursor: pointer;
+  cursor: default;
   transition: 0.5s; }
 
-.icon:hover {
+.iconSinglePlay:hover {
   border: 1px solid #222223;
-  border-radius: 10px; }
+  border-radius: 10px;
+  cursor: pointer; }
 
 .icon-selected {
   border: 1px solid #222223;

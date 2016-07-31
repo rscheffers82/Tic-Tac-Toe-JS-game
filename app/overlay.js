@@ -5,11 +5,11 @@ $('.overlaybox').on('click', '.pl', function(e){
     //else if (this.id === 'false' ) loadMulti();         // Multi-player mode
 });
 
-$('.overlaybox').on('click', '.icon' ,function(e){
+$('.overlaybox').on('click', '.iconSinglePlay' ,function(e){
     // icon change function
     var cName = e.currentTarget.className;
-    $('.' + cName).removeClass(cName + '-selected');
-    $('#' + this.id).addClass(cName + '-selected');
+    $('.' + cName).removeClass('icon-selected');
+    $('#' + this.id).addClass('icon-selected');
 });
 
 
@@ -23,8 +23,8 @@ var loadSingle = function(){
     var content = '<div class="overlaybox-content">' +
     	'<p>Player: <i class="note">(optional)</i> <input type="text" id="player1"></p>' +
         '<p>' +
-            '<img class="icon icon-selected" id="x" src="images/x.png">' +
-            '<img class="icon" id="o" src="images/o.png">' +
+            '<img class="iconSinglePlay icon-selected" id="x" src="images/x.png">' +
+            '<img class="iconSinglePlay" id="o" src="images/o.png">' +
         '</p>' +
         '<p class="note">* x starts the first game</p>' +
         '<p>Difficulty: ' +

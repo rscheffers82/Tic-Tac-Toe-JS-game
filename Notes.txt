@@ -42,7 +42,7 @@ v on win or draw, darken screen and show the message and score
 	- write code
 	- addition, AI gets better after more games
 - general styling and background
-- bugfix, multi-player icon selection, disable this
+v bugfix, multi-player icon selection, disable this
 - check cross browser compatibility
 - post in Facebook and Forums
 
