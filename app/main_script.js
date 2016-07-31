@@ -1,6 +1,7 @@
 // Javascript
 $( document ).ready(function() {
 	game.init();
+	//showBox();
 });
 
 var game = (function(){
@@ -108,4 +109,105 @@ var game = (function(){
 
 $('body').on('click', '.tile', function(event){
 	game.fill(event);
+});
+
+
+var loadSingle = function(){
+    $('.overlaybox-caption').empty();
+    $('.overlaybox-content').empty();
+    var title = '<span class="pl pl-selected" id="true">Single-player</span> | <span class="pl" id="false">Multi-player</span>';
+    var content = '<p>Player: <i class="note">(optional)</i> <input type="text"></p>' +
+        '<p>' +
+            '<img class="icon icon-selected" id="x" src="images/x.png">' +
+            '<img class="icon" id="o" src="images/o.png"">' +
+        '</p>' +
+        '<p class="note">* x starts the first game</p>' +
+        '<p>Difficulty: ' +
+            '<select name="difficulty">' +
+                '<option value="75">HARD:   Face a butt-kicking AI</option>' +
+                '<option value="50">MEDIUM: AI lets you win once in a while ;)</option>' +
+                '<option value="25">EASY:   If you are lacking courage</option>' +
+            '</select>' +
+        '</p>' +
+        '<button type="button" onclick="start()">Let\'s get started...</button>';
+    $('.overlaybox-caption').append(title);
+    $('.overlaybox-content').append(content);
+}
+
+var loadMulti = function(){
+    $('.overlaybox-caption').empty();
+    $('.overlaybox-content').empty();
+	var title = '<span class="pl" id="true">Single-player</span> | <span class="pl pl-selected" id="false">Multi-player</span>';
+    var content = '<div class="tab">' +
+        '<div class="tr">' +
+            '<div class="td"><img class="icon" id="x" src="images/x.png"></div>' +
+                '<div class="td">' +
+                    '<div>Player 1: </div><input type="text">' +
+                    '<div class="note less-margin">* x starts the first game</div>' +
+                '</div>' +
+            '</div>' +
+
+            '<div class="tr">' +
+                '<div class="td"><img class="icon" id="o" src="images/o.png"">' +
+                '</div>' +
+                '<div class="td">' +
+                    '<div>Player 2: </div><input type="text"></div>' +
+            '</div>' +
+        '</div>' +
+        
+        '<button type="button" onclick="start()">Let\'s get started...</button>';
+
+    $('.overlaybox-caption').append(title);
+    $('.overlaybox-content').append(content);
+}
+var showScore = function(){
+    $('.overlaybox-caption').empty();
+    $('.overlaybox-content').empty();
+
+    var title = 'Score';
+    var content = '<div class="summary">' +
+        'Player 1 wins...' +
+        '<div class="tab small">' +
+           '<div class="result-players tr">' +
+                '<div class="td left">Roy Scheffers:</div><div class="td right">7</div>' +
+            '</div>' +
+            '<div class="result-players tr">' +
+                '<div class="td left">IA (easy)</div><div class="td right">2</div>' +
+            '</div>' +
+            '<div class="result-players tr">' +
+                '<div class="td left">Draw:</div><div class="td right">15</div>' +
+            '</div>' +
+        '</div>' +
+    '</div>' +
+    '<button type="button" onclick="start()">Play again...</button>' +
+    '<button type="button" onclick="start()">Exit</button>';
+
+    $('.overlaybox-caption').append(title);
+    $('.overlaybox-content').append(content);
+
+    $('#myBox').css('height', '100%');
+}
+
+function showBox() {
+    loadSingle();
+    //loadMulti();
+    $('#myBox').css('height', '100%');
+}
+
+function start() {
+    $('#myBox').css('height', '0%');
+}
+
+$('.overlaybox-caption').on('click', '.pl', function(e){
+    console.log(this.id);
+    if (this.id === 'true') loadSingle();
+    else if (this.id === 'false' ) loadMulti();
+});
+
+$('.overlaybox-content').on('click', '.icon' ,function(e){
+    console.log(e);
+
+    var cName = e.currentTarget.className;
+    $('.' + cName).removeClass(cName + '-selected');
+    $('#' + this.id).addClass(cName + '-selected');
 });

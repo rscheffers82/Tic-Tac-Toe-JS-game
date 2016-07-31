@@ -18,6 +18,14 @@
 <!-- Example from 
 http://colintoh.com/blog/display-table-anti-hero
 -->
+
+<div id="myBox" class="overlay">
+    <div class="overlaybox">
+        <div class="overlaybox-caption"></div>
+        <div class="overlaybox-content"></div>
+    </div>
+</div>
+
 <div class="wrapper">
 	<div class="header"><!--
 		<div class="players">
@@ -30,6 +38,7 @@ http://colintoh.com/blog/display-table-anti-hero
 	<div class="main">
 		<div class="box sidebar">Left-sidebar</div>
 		<div class="box content">
+		<span style="font-size:30px;cursor:pointer" onclick="showBox()">☰ Open</span><br>
 			<div class="board">
 			</div>
 		</div>
