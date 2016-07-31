@@ -18,7 +18,7 @@ v clear board
 - flash winning 
 
 - settings menu
-- AI maximin algorithm
+- AI minimax algorithm
 
 v current state of the game in an array
 	- possible win, for AI
@@ -38,12 +38,12 @@ v checking for a win
 v add x or o choice
 - add settings in code, currently only visual available
 - on win or draw, darken screen and show the message and score
-- understand AI / maximin algorithm
+- understand AI / minimax algorithm
+	- write code
+	- addition, AI gets better after more games
 - flash winning
 - flash draw (all)
 - general styling and background
-- AI
-- AI gets better after more games
 - check cross browser compatibility
 - post in Facebook and Forums
 

@@ -31,19 +31,6 @@ var game = (function(){
 		}
 	}
 
-	var loadPlayers = function(){
-		player[0] = {
-			name: 'Tic Tac Toe King Royko',
-			icon: 'x',
-			win: 0
-		}
-		player[1] = {
-			//name: 'IA (' + difficulty + ')',
-			name: 'Zorana Queen Quick-thinker',
-			icon: 'o',
-			win: 0
-		}
-	}
 	var checkWin = function(icon) {
 		var possWin = [	[0,1,2], [3,4,5], [6,7,8],	// horizontal win
 						[0,3,6], [1,4,7], [2,5,8],	// vertical win
@@ -92,9 +79,46 @@ var game = (function(){
 		},
 		init: function(){
 			loadBoard();
-			loadPlayers();
+			game.loadPlayers();
 			start = 1;			// needed as reset switches players 
 			reset();
+		},
+		loadPlayers: function(){
+			AI = $('.pl-selected').attr('id');
+			player[0] = {}; player[1] = {};
+			difficulty = $('#difficulty').val();
+
+			// load player names 
+			player[0].name = $('#player1').val() === '' ? 'Player1' : $('#player1').val();
+			if ( $('#player2').val() === undefined ) player[1].name = 'Computer AI (' + difficulty + ')';
+			else if ( $('#player2').val() === '') player[1].name = 'Player2';
+			else player[1].name = $('#player2').val()
+
+			// load player icons
+			if (AI === 'true') {
+				player[0].icon = $('.icon-selected').attr('id');
+				player[1].icon = player[0].icon === 'x' ? 'o' : 'x';
+			}
+			else {
+				player[0].icon = 'x';
+				player[1].icon = 'o';
+			}
+
+	console.log(AI);
+	console.log(player);
+/*
+			player[0] = {
+				name: 'Tic Tac Toe King Royko',
+				icon: 'x',
+				win: 0
+			}
+			player[1] = {
+			//name: 'IA (' + difficulty + ')',
+				name: 'Zorana Queen Quick-thinker',
+				icon: 'o',
+				win: 0
+			}
+*/
 		},
 		fill: function(tile){
 			var pos = tile.currentTarget.id;
@@ -120,14 +144,14 @@ var loadSingle = function(){
     	'</div>';
     
     var content = '<div class="overlaybox-content">' +
-    	'<p>Player: <i class="note">(optional)</i> <input type="text"></p>' +
+    	'<p>Player: <i class="note">(optional)</i> <input type="text" id="player1"></p>' +
         '<p>' +
             '<img class="icon icon-selected" id="x" src="images/x.png">' +
-            '<img class="icon" id="o" src="images/o.png"">' +
+            '<img class="icon" id="o" src="images/o.png">' +
         '</p>' +
         '<p class="note">* x starts the first game</p>' +
         '<p>Difficulty: ' +
-            '<select name="difficulty">' +
+            '<select id="difficulty">' +
                 '<option value="75">HARD:   Face a butt-kicking AI</option>' +
                 '<option value="50">MEDIUM: AI lets you win once in a while ;)</option>' +
                 '<option value="25">EASY:   If you are lacking courage</option>' +
@@ -151,7 +175,7 @@ var loadMulti = function(){
     	    '<div class="tr">' +
         	    '<div class="td"><img class="icon" id="x" src="images/x.png"></div>' +
             	'<div class="td">' +
-                    '<div>Player 1: </div><input type="text">' +
+                    '<div>Player 1: </div><input type="text" id="player1">' +
                    	'<div class="note less-margin">* x starts the first game</div>' +
 	            '</div>' +
     	    '</div>' +
@@ -159,7 +183,7 @@ var loadMulti = function(){
         	'<div class="tr">' +
             	'<div class="td"><img class="icon" id="o" src="images/o.png"></div>' +
 	            '<div class="td">' +
-    	            '<div>Player 2: </div><input type="text">' + 
+    	            '<div>Player 2: </div><input type="text" id="player2">' + 
     	        '</div>' +
         	'</div>' +
         '</div>' +
@@ -202,12 +226,37 @@ function showBox() {
     $('#myBox').css('height', '100%');
 }
 
+var grabSettings = function() {
+	var AI = $('.pl-selected').attr('id');
+	var player = []; player[0] = {}; player[1] = {};
+	var difficulty = $('#difficulty').val();
+
+	// load player names 
+	player[0].name = $('#player1').val() === '' ? 'Player1' : $('#player1').val();
+	if ( $('#player2').val() === undefined ) player[1].name = 'Computer AI (' + difficulty + ')';
+	else if ( $('#player2').val() === '') player[1].name = 'Player2';
+	else player[1].name = $('#player2').val()
+
+	// load player icons
+	if (AI === 'true') {
+		player[0].icon = $('.icon-selected').attr('id');
+		player[1].icon = player[0].icon === 'x' ? 'o' : 'x';
+	}
+	else {
+		player[0].icon = 'x';
+		player[1].icon = 'o';
+	}
+
+	console.log(AI);
+	console.log(player);
+}
+
 function start() {
     $('#myBox').css('height', '0%');
+    loadPlayers();
 }
 
 $('.overlaybox').on('click', '.pl', function(e){
-    console.log(this.id);
     if (this.id === 'true') loadSingle();
     else if (this.id === 'false' ) loadMulti();
 });
