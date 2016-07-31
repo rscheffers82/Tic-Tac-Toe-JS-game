@@ -35,7 +35,8 @@ v checking for a win
 	v your name
 	v difficulty
 	* lightbox code: http://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_overlay
-- add x or o choice
+v add x or o choice
+- add settings in code, currently only visual available
 - on win or draw, darken screen and show the message and score
 - understand AI / maximin algorithm
 - flash winning

@@ -113,10 +113,14 @@ $('body').on('click', '.tile', function(event){
 
 
 var loadSingle = function(){
-    $('.overlaybox-caption').empty();
-    $('.overlaybox-content').empty();
-    var title = '<span class="pl pl-selected" id="true">Single-player</span> | <span class="pl" id="false">Multi-player</span>';
-    var content = '<p>Player: <i class="note">(optional)</i> <input type="text"></p>' +
+    $('.overlaybox').empty();
+    
+    var title = '<div class="overlaybox-caption">' +
+    		'<span class="pl pl-selected" id="true">Single-player</span> | <span class="pl" id="false">Multi-player</span>' +
+    	'</div>';
+    
+    var content = '<div class="overlaybox-content">' +
+    	'<p>Player: <i class="note">(optional)</i> <input type="text"></p>' +
         '<p>' +
             '<img class="icon icon-selected" id="x" src="images/x.png">' +
             '<img class="icon" id="o" src="images/o.png"">' +
@@ -129,61 +133,64 @@ var loadSingle = function(){
                 '<option value="25">EASY:   If you are lacking courage</option>' +
             '</select>' +
         '</p>' +
-        '<button type="button" onclick="start()">Let\'s get started...</button>';
-    $('.overlaybox-caption').append(title);
-    $('.overlaybox-content').append(content);
+        '<button type="button" onclick="start()">Let\'s get started...</button>' + 
+        '</div>';
+    
+    $('.overlaybox').append(title + content);
 }
 
 var loadMulti = function(){
-    $('.overlaybox-caption').empty();
-    $('.overlaybox-content').empty();
-	var title = '<span class="pl" id="true">Single-player</span> | <span class="pl pl-selected" id="false">Multi-player</span>';
-    var content = '<div class="tab">' +
-        '<div class="tr">' +
-            '<div class="td"><img class="icon" id="x" src="images/x.png"></div>' +
-                '<div class="td">' +
+    $('.overlaybox').empty();
+    
+    var title = '<div class="overlaybox-caption">' +
+    		'<span class="pl" id="true">Single-player</span> | <span class="pl pl-selected" id="false">Multi-player</span>' +
+    	'</div>';
+    
+    var content = '<div class="overlaybox-content">' +
+	    '<div class="tab">' +
+    	    '<div class="tr">' +
+        	    '<div class="td"><img class="icon" id="x" src="images/x.png"></div>' +
+            	'<div class="td">' +
                     '<div>Player 1: </div><input type="text">' +
-                    '<div class="note less-margin">* x starts the first game</div>' +
-                '</div>' +
-            '</div>' +
+                   	'<div class="note less-margin">* x starts the first game</div>' +
+	            '</div>' +
+    	    '</div>' +
 
-            '<div class="tr">' +
-                '<div class="td"><img class="icon" id="o" src="images/o.png"">' +
-                '</div>' +
-                '<div class="td">' +
-                    '<div>Player 2: </div><input type="text"></div>' +
-            '</div>' +
+        	'<div class="tr">' +
+            	'<div class="td"><img class="icon" id="o" src="images/o.png"></div>' +
+	            '<div class="td">' +
+    	            '<div>Player 2: </div><input type="text">' + 
+    	        '</div>' +
+        	'</div>' +
         '</div>' +
-        
-        '<button type="button" onclick="start()">Let\'s get started...</button>';
+        '<button type="button" onclick="start()">Let\'s get started...</button>' +
+    '</div>';
 
-    $('.overlaybox-caption').append(title);
-    $('.overlaybox-content').append(content);
+    $('.overlaybox').append(title + content);
 }
 var showScore = function(){
-    $('.overlaybox-caption').empty();
-    $('.overlaybox-content').empty();
+    $('.overlaybox').empty();
 
-    var title = 'Score';
-    var content = '<div class="summary">' +
-        'Player 1 wins...' +
-        '<div class="tab small">' +
-           '<div class="result-players tr">' +
-                '<div class="td left">Roy Scheffers:</div><div class="td right">7</div>' +
-            '</div>' +
-            '<div class="result-players tr">' +
-                '<div class="td left">IA (easy)</div><div class="td right">2</div>' +
-            '</div>' +
-            '<div class="result-players tr">' +
-                '<div class="td left">Draw:</div><div class="td right">15</div>' +
-            '</div>' +
-        '</div>' +
-    '</div>' +
-    '<button type="button" onclick="start()">Play again...</button>' +
-    '<button type="button" onclick="start()">Exit</button>';
-
-    $('.overlaybox-caption').append(title);
-    $('.overlaybox-content').append(content);
+    var title = '<div class="overlaybox-caption">Score</div>';
+    var content = '<div class="overlaybox-content">' +
+    	'<div class="summary">' +
+        	'Player 1 wins...' +
+	        '<div class="tab small">' +
+    	       '<div class="result-players tr">' +
+        	        '<div class="td left">Roy Scheffers:</div><div class="td right">7</div>' +
+            	'</div>' +
+	            '<div class="result-players tr">' +
+    	            '<div class="td left">IA (easy)</div><div class="td right">2</div>' +
+        	    '</div>' +
+            	'<div class="result-players tr">' +
+	                '<div class="td left">Draw:</div><div class="td right">15</div>' +
+    	        '</div>' +
+        	'</div>' +
+	    '</div>' +
+    	'<button type="button" onclick="start()">Play again...</button>' +
+    	'<button type="button" onclick="start()">Exit</button>' +
+    '</div>';
+    $('.overlaybox').append(title + content);
 
     $('#myBox').css('height', '100%');
 }
@@ -191,6 +198,7 @@ var showScore = function(){
 function showBox() {
     loadSingle();
     //loadMulti();
+    //showScore();
     $('#myBox').css('height', '100%');
 }
 
@@ -198,13 +206,13 @@ function start() {
     $('#myBox').css('height', '0%');
 }
 
-$('.overlaybox-caption').on('click', '.pl', function(e){
+$('.overlaybox').on('click', '.pl', function(e){
     console.log(this.id);
     if (this.id === 'true') loadSingle();
     else if (this.id === 'false' ) loadMulti();
 });
 
-$('.overlaybox-content').on('click', '.icon' ,function(e){
+$('.overlaybox').on('click', '.icon' ,function(e){
     console.log(e);
 
     var cName = e.currentTarget.className;
