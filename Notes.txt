@@ -37,17 +37,25 @@ v checking for a win
 	* lightbox code: http://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_overlay
 v add x or o choice
 v add settings in code, currently only visual available
-- on win or draw, darken screen and show the message and score
-- understand AI / minimax algorithm
+v on win or draw, darken screen and show the message and score
+- understand AI / minimax algorithm or wiki code
 	- write code
 	- addition, AI gets better after more games
-- flash winning
-- flash draw (all)
 - general styling and background
+- bugfix, multi-player icon selection, disable this
 - check cross browser compatibility
 - post in Facebook and Forums
 
+optional:
+- flash winning
+- flash draw (all)
+
+
+
 === { Build notes } ===
+
+TicTacToe steps
+https://en.wikipedia.org/wiki/Tic-tac-toe
 
 IA articles -> minimax algorithm
 http://mostafa-samir.github.io/Tic-Tac-Toe-AI/

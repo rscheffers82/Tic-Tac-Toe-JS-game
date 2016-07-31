@@ -1,7 +1,8 @@
 $('.overlaybox').on('click', '.pl', function(e){
     // Single / Multi-player selection
-    if (this.id === 'true') loadSingle();               // AI mode, true
-    else if (this.id === 'false' ) loadMulti();         // Multi-player mode
+    // multi-play only: remove // from below two lines, once single play is done
+    //if (this.id === 'true') loadSingle();               // AI mode, true
+    //else if (this.id === 'false' ) loadMulti();         // Multi-player mode
 });
 
 $('.overlaybox').on('click', '.icon' ,function(e){
@@ -33,7 +34,7 @@ var loadSingle = function(){
                 '<option value="25">EASY:   If you are lacking courage</option>' +
             '</select>' +
         '</p>' +
-        '<button type="button" onclick="start()">Let\'s get started...</button>' + 
+        '<button type="button" onclick="game.nextGame(true)">Let\'s get started...</button>' + 
         '</div>';
     
     $('.overlaybox').append(title + content);
@@ -63,32 +64,34 @@ var loadMulti = function(){
     	        '</div>' +
         	'</div>' +
         '</div>' +
-        '<button type="button" onclick="start()">Let\'s get started...</button>' +
+        '<button type="button" onclick="game.nextGame(true)">Let\'s get started...</button>' +
     '</div>';
 
     $('.overlaybox').append(title + content);
 }
-var showScore = function(){
+var showScore = function(player, draw, message){
     $('.overlaybox').empty();
 
     var title = '<div class="overlaybox-caption">Score</div>';
     var content = '<div class="overlaybox-content">' +
     	'<div class="summary">' +
-        	'Player 1 wins...' +
+        	message +
 	        '<div class="tab small">' +
     	       '<div class="result-players tr">' +
-        	        '<div class="td left">Roy Scheffers:</div><div class="td right">7</div>' +
+        	        '<div class="td left">' + player[0].name + '</div>' +
+                    '<div class="td right">' + player[0].win + '</div>' +
             	'</div>' +
 	            '<div class="result-players tr">' +
-    	            '<div class="td left">IA (easy)</div><div class="td right">2</div>' +
+    	            '<div class="td left">' + player[1].name + '</div>' +
+                    '<div class="td right">' + player[1].win + '</div>' +
         	    '</div>' +
             	'<div class="result-players tr">' +
-	                '<div class="td left">Draw:</div><div class="td right">15</div>' +
+	                '<div class="td left">Draw:</div><div class="td right">'+ draw +'</div>' +
     	        '</div>' +
         	'</div>' +
 	    '</div>' +
-    	'<button type="button" onclick="start()">Play again...</button>' +
-    	'<button type="button" onclick="start()">Exit</button>' +
+    	'<button type="button" onclick="game.nextGame()">Play again...</button>' +
+    	'<button type="button" onclick="game.init()">Reset</button>' +
     '</div>';
     $('.overlaybox').append(title + content);
 

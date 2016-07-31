@@ -1,7 +1,6 @@
 // Javascript
 $( document ).ready(function() {
 	game.init();
-	//showBox();
 });
 
 var game = (function(){
@@ -13,19 +12,11 @@ var game = (function(){
 	var difficulty;			// 0 to 100, 100: player never wins
 	var draw;
 	var turn;				// which player is allowed to make a move
-	var start = 0;				// player 0 starts the game
-	// private functions
-	var reset = function(){
-		//console.log('reset game');
-		$('.tile').empty();
-		board = [0,0,0,
-				 0,0,0,
-				 0,0,0];
-		start = start === 0 ? 1 : 0;
-		turn = start					// alternate the first move between players
-	}
+	var start;				// player 0 starts the game
 
+	// private functions
 	var loadBoard = function(){
+		$('.board').empty();
 		for (i = 0; i < 9; i++){
 			$('.board').append('<div class="tile" id="' + i + '">');
 		}
@@ -50,69 +41,80 @@ var game = (function(){
 	}
 	
 	var handleWin = function(icon){
-		// add code for flashing winning line
-		var won = player[0].icon === icon ? 0 : 1;
-		alert (player[won].name + ' you are awesome!!!');
+		// Optional - add code for flashing winning line
 		
 		// Take care of the score part
+		var won = player[0].icon === icon ? 0 : 1;
 		player[won].win++;
-		updateScore();
-		reset();
+		
+		var message = player[won].name + ' you are awesome!';
+		showScore(player, draw, message);
 	}
 	var handleDraw = function(){
-		alert('Clash of the titans - we have a draw!');
+		// Optional - add code for flashing winning line
+
+		// Take care of the score part
 		draw++;
-		updateScore();
-		reset();
+		
+		var message = 'Clash of the titans - we have a draw!'
+		showScore(player, draw, message);
 	}
 
-	var updateScore = function(){
-		console.log(player[0].name + ': ' + player[0].win);
-		console.log(player[1].name + ': ' + player[1].win);
-		console.log('Draw: ',draw);
-	}
+	var	setGameValues = function(){
+		AI = $('.pl-selected').attr('id');
+		difficulty = $('#difficulty').val();
+		player[0] = {}; player[1] = {};
 
+		// load player names 
+		player[0].name = $('#player1').val() === '' ? 'Player1' : $('#player1').val();
+		if ( $('#player2').val() === undefined ) player[1].name = 'Computer AI (' + difficulty + ')';
+		else if ( $('#player2').val() === '') player[1].name = 'Player2';
+		else player[1].name = $('#player2').val()
+
+		// load player icons
+		if (AI === 'true') {
+			player[0].icon = $('.icon-selected').attr('id');
+			player[1].icon = player[0].icon === 'x' ? 'o' : 'x';
+		}
+		else {
+			player[0].icon = 'x';
+			player[1].icon = 'o';
+		}
+
+		player[0].win = 0;
+		player[1].win = 0;
+		draw = 0;
+
+		if ( player[0].icon === 'o' ) return 1;
+		else return 0;
+		//console.log(AI);
+		//console.log('player:', player);
+	}
 	// public functions
 	return {
-		helper: function(){		// function used to trigger / test inner functions
-			reset();
-		},
 		init: function(){
-			loadBoard();
-			//game.loadGamePlay();
-			start = 1;			// needed as reset switches players 
-			reset();
+			loadBoard();				// visually load the board
+			//turn = start = 1;			// needed as next game switches players 
+			
+			//loadSingle();				// display single player mode menu which loads nextGame(true) on button click
+    		loadMulti(); // multi-play only, replace this line with the above once single play is working
+    		$('#myBox').css('height', '100%');
 		},
-		setGameValues: function(){
-			AI = $('.pl-selected').attr('id');
-			difficulty = $('#difficulty').val();
-			player[0] = {}; player[1] = {};
-
-			// load player names 
-			player[0].name = $('#player1').val() === '' ? 'Player1' : $('#player1').val();
-			if ( $('#player2').val() === undefined ) player[1].name = 'Computer AI (' + difficulty + ')';
-			else if ( $('#player2').val() === '') player[1].name = 'Player2';
-			else player[1].name = $('#player2').val()
-
-			// load player icons
-			if (AI === 'true') {
-				player[0].icon = $('.icon-selected').attr('id');
-				player[1].icon = player[0].icon === 'x' ? 'o' : 'x';
+		nextGame: function(firstTime){
+			//console.log('next game');
+			if ( firstTime ) {
+				turn = start = setGameValues();
+			} else {
+				start = start === 0 ? 1 : 0;
+				turn = start;					// alternate the first move between players
 			}
-			else {
-				player[0].icon = 'x';
-				player[1].icon = 'o';
-			}
-
-			player[0].win = 0;
-			player[1].win = 0;
-			draw = 0;
-
-			console.log(AI);
-			console.log(player);
+			$('.tile').empty();
+			board = [0,0,0,
+					 0,0,0,
+					 0,0,0];
+			$('#myBox').css('height', '0%');
 		},
-		fill: function(tile){
-			var pos = tile.currentTarget.id;
+		fill: function(pos){
 			if ( board[pos] === 0 ){
 				board[pos] = player[turn].icon;
 				$('#' + pos).append('<img src="images/' + player[turn].icon +'.png">');
@@ -123,42 +125,5 @@ var game = (function(){
 })();
 
 $('body').on('click', '.tile', function(event){
-	game.fill(event);
+	game.fill(event.currentTarget.id);
 });
-
-function showBox() {
-    loadSingle();
-    $('#myBox').css('height', '100%');
-}
-
-function start() {
-    game.setGameValues();
-    $('#myBox').css('height', '0%');
-}
-
-/*
-var grabSettings = function() {
-	var AI = $('.pl-selected').attr('id');
-	var player = []; player[0] = {}; player[1] = {};
-	var difficulty = $('#difficulty').val();
-
-	// load player names 
-	player[0].name = $('#player1').val() === '' ? 'Player1' : $('#player1').val();
-	if ( $('#player2').val() === undefined ) player[1].name = 'Computer AI (' + difficulty + ')';
-	else if ( $('#player2').val() === '') player[1].name = 'Player2';
-	else player[1].name = $('#player2').val()
-
-	// load player icons
-	if (AI === 'true') {
-		player[0].icon = $('.icon-selected').attr('id');
-		player[1].icon = player[0].icon === 'x' ? 'o' : 'x';
-	}
-	else {
-		player[0].icon = 'x';
-		player[1].icon = 'o';
-	}
-
-	console.log(AI);
-	console.log(player);
-}
-*/
