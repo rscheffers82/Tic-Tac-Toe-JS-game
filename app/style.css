@@ -77,7 +77,8 @@ body {
 .board {
   max-width: 350px;
   border: 1px solid #222223;
-  margin: 0 auto; }
+  margin: 0 auto;
+  padding: 10px 0 5px; }
 
 .tile {
   display: inline-block;

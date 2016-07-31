@@ -36,7 +36,7 @@ v checking for a win
 	v difficulty
 	* lightbox code: http://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_overlay
 v add x or o choice
-- add settings in code, currently only visual available
+v add settings in code, currently only visual available
 - on win or draw, darken screen and show the message and score
 - understand AI / minimax algorithm
 	- write code
