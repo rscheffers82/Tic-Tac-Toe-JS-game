@@ -69,7 +69,7 @@ body {
 	display: block;
 }
 
-/* === Custom styling depending on the project === */ 
+/* === Custom styling depending on the project === */
 
 .content {
   vertical-align: middle;
@@ -91,10 +91,10 @@ body {
 .tile{
   display: inline-block;
   background-color: #00ff22;
-  background-image: 
+  background-image:
   	linear-gradient(
   		#fafafc 2px, #9700BA 20px, #fafafc 90px
-  	); 
+  	);
   width: 100px;
   height: 100px;
   border-radius: 10px;
@@ -184,7 +184,7 @@ select{
   border-radius: 25px 25px 5px 5px;
 }
 .pl-selected{
-  background-image: 
+  background-image:
     linear-gradient(
       #d1c630 5px, #ded233 10px, #fafafc 30px, #d1c630 35px
     );
