@@ -4,10 +4,16 @@
 <html>
   <head>
     <script>
+
+
+// helpful one:
+// http://www.hamedahmadi.com/gametree/
+// https://jsfiddle.net/carlosmachina/yt91jr2a/4/         -- working NegaMax
+
 //http://codereview.stackexchange.com/questions/81988/minimax-for-tic-tac-toe
 //http://www.code2learn.com/2012/01/minimax-algorithm-tutorial.html
 //https://chessprogramming.wikispaces.com/Negamax
-
+//http://stackoverflow.com/questions/36026215/javascript-negamax-tictactoe-implementation-working-only-on-some-plays
 
 // https://en.wikipedia.org/wiki/Negamax
 // http://chrisjordan8l.blogspot.ca/2015/01/tictactoe-subtle-difference-between.html
@@ -63,7 +69,7 @@ MiniMax.prototype = {
 
       var subalpha = -this.buildTree_r(boardCopy, otherPlayer, depth + 1); //pass new gamestate into recursion
       if(alpha < subalpha){ //if move is better than alpha, increase alpha
-        alpha += subalpha;
+        alpha = subalpha;
       }
       if(depth == 0){ //only if we are looking at REAL gamestate do we push an alpha to the list
         saList.push(subalpha);
@@ -84,31 +90,56 @@ MiniMax.prototype = {
     return list[Math.floor(Math.random() * list.length)]; // return an item
   },
   negamax: function(board, depth, player){
-  /*  if depth = 0 or node is a terminal node
-       return color * the heuristic value of node
+  /*  === Wiki pseudo code ===
+    if depth = 0 or node is a terminal node
+       return player (1 or -1) * the heuristic value of node
 
     bestValue := −∞
     foreach child of node
       v := −negamax(child, depth − 1, −color)
       bestValue := max( bestValue, v )
       return bestValue
+ 
+    === Code example ===
+ 1  const int sign[2]={1,-1}   //0 is blue, 1 is red
+ 2  
+ 3  int NegaMax(Board b, int depth, int color) {
+ 4      if (GameOver(b) or depth>MaxDepth)
+ 5          return sign[color]*Analysis(b)
+ 6      int max = -infinity
+ 7      for each legal move m in board b {
+ 8          copy b to c
+ 9          make move m in board c
+10          int x= - NegaMax(c, depth+1, 1-color)  //Note the "-" before "NegaMax"
+11          if (x>max) max = x
+12      }
+13      return max
+14  }
+
+
     }*/
-    console.log(board.getMoves());
     if ( depth == this.MAX_DEPTH || board.isFull() ) {
-      console.log('board score: ', player * board.eval(depth));
-      return player * board.eval(depth);
+      var r = player * board.score(depth);
+      console.log('Value: ', r);
+      return r;
     }
 
-    var bestValue = -1000;
+    var bestValue = -100;
     var moveList = board.getMoves();
+    
     for(var i=0; i<moveList.length; i++){
-      console.log('I: ', i);
       var boardCopy = board.copy(); //Copy current gamestate
+      boardCopy.move(player, moveList[i]);
       var v = -this.negamax(boardCopy, depth + 1, -player)
-      var bestValue = Math.max( bestValue, v )
-      console.log('best value: ', bestValue);
-      return bestValue;
+      bestValue = Math.max( bestValue, v )
+      //console.log(i, ' - bestValue: ', bestValue);
     }
+    return bestValue;
+  },
+  eval: function(){
+    // input: current board state
+    // take all available moves, pass them to negamax and create a list of the highest scores, keep them linked to the moves
+    // 
   }
 }
 
@@ -118,22 +149,7 @@ board object    which is the node in negamax function
   value         hold the value for the player at hand
   winner()      end state of the game, terminal / leaf node
   moves()       Available moves
-
-
-
-
-
-
-
-
-
 */
-
-
-
-
-
-
 
 // board object
 var Board = function(){
@@ -195,7 +211,7 @@ Board.prototype = {
     }
     return this.empty;
   },
-  eval: function(depth){
+  score: function(depth){
     return 10 - depth;
   }
 }
@@ -208,10 +224,18 @@ var b = new Board();
 //  0 1 2
 //  3 4 5
 //  6 7 8
-b.move('x',0);  b.move('o',1);  b.move('o',2); 
-b.move('o',3);   /* 0 */         /* 0 */ 
-b.move('x',6);  /* 0 */         b.move('x',8);
+//b.move('x',0);  b.move('o',1);  b.move('o',2); 
+//b.move('o',3);  b.move('o',4);      /* 0 */ 
+//b.move('x',6);  /* 0 */         b.move('x',8);
 //player, pos
+
+//  x   x   ?
+//  o   o   ?
+//  x   x   ?
+// o is at play
+b.move(1,0); b.move(1,1);
+b.move(-1,3); b.move(-1,4);
+b.move(1,6); b.move(1,7);
 
 console.log( b.gamestate );
 
@@ -221,8 +245,8 @@ var cb = function(value){
 }
 
 var mmax = new MiniMax();
-var x = mmax.negamax(b, 2, 1);
-
+var x = mmax.negamax(b, 0, -1);
+console.log(x);
 
 
 
