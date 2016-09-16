@@ -23,7 +23,7 @@
 var MiniMax = function(){
   //init values and options
   this.bestMove = 0;
-  this.MAX_DEPTH = 6;
+  this.MAX_DEPTH = 7;
   this.loop = 0;
 }
 
@@ -72,7 +72,7 @@ MiniMax.prototype = {
       if(alpha < subalpha){ //if move is better than alpha, increase alpha
         alpha = subalpha;
       }
-      if(depth == 0){ //only if we are looking at REAL gamestate do we push an alpha to the list
+      if(depth == 0){ //only if we are looking at REAL gamestate do we push an alpha to the list (when going through the various boards)
         saList.push(subalpha);
       }
     }
@@ -83,6 +83,9 @@ MiniMax.prototype = {
           posMoves.push(moveList[n]);
         }
       }
+      console.log('posMoves: ', posMoves);
+      console.log('saList: ', saList);
+      
       this.bestMove = this.rand(posMoves); //in future pick random..
     }
     return alpha;
@@ -118,16 +121,17 @@ MiniMax.prototype = {
 13      return max
 14  }
     }*/
+    if ( depth > this.MAX_DEPTH ) {
+    	return 0; 			// only investigate to a certain depth (horizon), when too deep, return in order to make the game fast enough
+    }
+	var winner = board.getWinner();
+	if ( winner != board.empty ) {
+		return player * board.score(depth);
+	}
+
     if ( board.isFull() ){
     	//console.log('board is full');
     	return 0;					// it's a tie game, no points for either player
-    }
-
-    if ( depth == this.MAX_DEPTH || board.getWinner == board.x || board.getWinner == board.o ) {
-      //console.log('Depth: ', depth);
-      //console.log('Score: ', board.score(depth) );
-      console.log('winner: ', board.getWinner() );
-      return player * board.score(depth);
     }
 
     var bestValue = -100;
@@ -138,13 +142,23 @@ MiniMax.prototype = {
       var v = -this.negamax(boardCopy, depth + 1, -player)
       bestValue = Math.max( bestValue, v )
       //console.log(i, ' - bestValue: ', bestValue);
+      
+      if (depth == 0 ) {
+      	// add here what needs to be done when in the loop for a real move
+      	console.log('Player: ', player);
+      	console.log('Move: ', moveList[i], ' score: ', bestValue);
+      	console.log('Boardstate: ', boardCopy.gamestate);
+      	console.log('--- --- --- --- ---');
+      }
+
     }
+
+    if ( depth == 0 ){
+    	// what does the function need to return after all moves have been evaluated
+    	console.log('All(', this.loop, ') possibilities evaluated...');
+    }
+
     return bestValue;
-  },
-  eval: function(){
-    // input: current board state
-    // take all available moves, pass them to negamax and create a list of the highest scores, keep them linked to the moves
-    // 
   }
 }
 
@@ -223,6 +237,12 @@ Board.prototype = {
 
 // experiment area with the various functions
 
+var cb = function(value){
+  //console.log(b.gamestate);
+  console.log('bestMove: ', value);
+}
+
+
 var b = new Board();
 // alternates between 0 and 8, because of rand when depth is 0. Unsure why?
 
@@ -234,51 +254,35 @@ var b = new Board();
 //b.move('x',6);  /* 0 */         b.move('x',8);
 //player, pos
 
-//  x   x   ?
-//  o   o   ?
-//  x   x   ?
-// o is at play
-//b.move(1,0); b.move(1,1);
-//b.move(-1,3); b.move(-1,4);
-//b.move(1,6); b.move(1,7);
-/*
-b.move(1,0);			// score is -4
-b.move(1,1);			// score is -4
-b.move(1,2);			// score is -4
-b.move(1,3);			// score is -4
-b.move(1,4);			// score is -4
-b.move(1,5);			// score is -4
-b.move(1,6);			// score is -4
-b.move(1,7);			// score is -4
-b.move(1,8);			// score is -4
-*/
+//  x   ?   ?		0	1	2
+//  ?   o   ?		3	4	5
+//  ?   ?   x 		6	7	8
 
-b.move(1,0); 	b.move(-1,1);	b.move(-1,2);
-				b.move(1,4);	b.move(-1,5);
-b.move(1, 6);
 
-console.log( b.getMoves() );
+b.move(1,0); 					b.move(-1,2);
+				b.move(-1,4);	b.move(1, 5);
+								b.move(1, 8);					
+
+console.log( 'Possible moves: ', b.getMoves() );
+
+var activePlayer = -1;
 var mmax = new MiniMax();
+//mmax.negamax(b, 0, activePlayer);
+mmax.buildTree(b, activePlayer, cb);
+
+
+/*
 
 var moves = b.getMoves();
 for (i = 0; i < moves.length; i++){
 	var boardC = b.copy();
-	boardC.move(1,moves[i]);
+	boardC.move(activePlayer,moves[i]);
 	console.log('Boardstate: ', boardC.gamestate);
-	console.log('Move: ', moves[i] , ' value: ', mmax.negamax(boardC, 2, 1) );
+	console.log('Move: ', moves[i] , ' value: ', mmax.negamax(boardC, 0, activePlayer) );
 }
-console.log('Execution of NegaMax is: ', mmax.loop);
+console.log('Execution of NegaMax: ', mmax.loop);
 
-var cb = function(value){
-  //console.log(b.gamestate);
-  console.log('bestMove: ', value);
-}
-/*
-var mmax = new MiniMax();
-var x = mmax.negamax(b, 0, -1);
-console.log(x);
 */
-
 
 /*
 Pseudo code, what needs to be done
