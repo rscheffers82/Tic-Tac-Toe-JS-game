@@ -24,6 +24,7 @@ var MiniMax = function(){
   //init values and options
   this.bestMove = 0;
   this.MAX_DEPTH = 6;
+  this.loop = 0;
 }
 
 MiniMax.prototype = {
@@ -90,6 +91,7 @@ MiniMax.prototype = {
     return list[Math.floor(Math.random() * list.length)]; // return an item
   },
   negamax: function(board, depth, player){
+  this.loop++;
   /*  === Wiki pseudo code ===
     if depth = 0 or node is a terminal node
        return player (1 or -1) * the heuristic value of node
@@ -115,18 +117,21 @@ MiniMax.prototype = {
 12      }
 13      return max
 14  }
-
-
     }*/
-    if ( depth == this.MAX_DEPTH || board.isFull() ) {
-      var r = player * board.score(depth);
-      console.log('Value: ', r);
-      return r;
+    if ( board.isFull() ){
+    	//console.log('board is full');
+    	return 0;					// it's a tie game, no points for either player
+    }
+
+    if ( depth == this.MAX_DEPTH || board.getWinner == board.x || board.getWinner == board.o ) {
+      //console.log('Depth: ', depth);
+      //console.log('Score: ', board.score(depth) );
+      console.log('winner: ', board.getWinner() );
+      return player * board.score(depth);
     }
 
     var bestValue = -100;
     var moveList = board.getMoves();
-    
     for(var i=0; i<moveList.length; i++){
       var boardCopy = board.copy(); //Copy current gamestate
       boardCopy.move(player, moveList[i]);
@@ -233,24 +238,59 @@ var b = new Board();
 //  o   o   ?
 //  x   x   ?
 // o is at play
-b.move(1,0); b.move(1,1);
-b.move(-1,3); b.move(-1,4);
-b.move(1,6); b.move(1,7);
+//b.move(1,0); b.move(1,1);
+//b.move(-1,3); b.move(-1,4);
+//b.move(1,6); b.move(1,7);
+/*
+b.move(1,0);			// score is -4
+b.move(1,1);			// score is -4
+b.move(1,2);			// score is -4
+b.move(1,3);			// score is -4
+b.move(1,4);			// score is -4
+b.move(1,5);			// score is -4
+b.move(1,6);			// score is -4
+b.move(1,7);			// score is -4
+b.move(1,8);			// score is -4
+*/
 
-console.log( b.gamestate );
+b.move(1,0); 	b.move(-1,1);	b.move(-1,2);
+				b.move(1,4);	b.move(-1,5);
+b.move(1, 6);
+
+console.log( b.getMoves() );
+var mmax = new MiniMax();
+
+var moves = b.getMoves();
+for (i = 0; i < moves.length; i++){
+	var boardC = b.copy();
+	boardC.move(1,moves[i]);
+	console.log('Boardstate: ', boardC.gamestate);
+	console.log('Move: ', moves[i] , ' value: ', mmax.negamax(boardC, 2, 1) );
+}
+console.log('Execution of NegaMax is: ', mmax.loop);
 
 var cb = function(value){
   //console.log(b.gamestate);
   console.log('bestMove: ', value);
 }
-
+/*
 var mmax = new MiniMax();
 var x = mmax.negamax(b, 0, -1);
 console.log(x);
+*/
 
 
+/*
+Pseudo code, what needs to be done
+- gather all available moves
+	- make a move
+	- eval the board
+	- add a score to it
+- determine which move has the highest score of all moves
+- output this so the IA can use it
 
 
+*/
 
 
     </script>
