@@ -1,0 +1,373 @@
+
+
+
+<html>
+  <head>
+    <script>
+
+
+// helpful one:
+// http://www.hamedahmadi.com/gametree/
+// https://jsfiddle.net/carlosmachina/yt91jr2a/4/         -- working NegaMax
+
+//http://codereview.stackexchange.com/questions/81988/minimax-for-tic-tac-toe
+//http://www.code2learn.com/2012/01/minimax-algorithm-tutorial.html
+//https://chessprogramming.wikispaces.com/Negamax
+//http://stackoverflow.com/questions/36026215/javascript-negamax-tictactoe-implementation-working-only-on-some-plays
+
+// https://en.wikipedia.org/wiki/Negamax
+// http://chrisjordan8l.blogspot.ca/2015/01/tictactoe-subtle-difference-between.html
+
+// Minimax object
+
+var MiniMax = function(){
+  //init values and options
+  this.bestMove = 0;
+  this.MAX_DEPTH = 8;
+  this.loop = 0;
+}
+
+MiniMax.prototype = {
+  //function called from game, bestmove will return the computer move
+  buildTree: function(board, player, cb){
+    this.bestMove = 0;
+    this.buildTree_r(board, player, 0);
+    cb(this.bestMove);
+  },
+  //recursive function to build minimax tree and rate the value of the board
+  buildTree_r: function(board, currPlayer, depth){
+  this.loop++;
+    if(depth > this.MAX_DEPTH){
+      return 0;
+    }
+    //Set the otherplayer for the next game state and to check for loss
+    var otherPlayer;
+    if(currPlayer == board.X){
+      otherPlayer = board.O;
+    } else {
+      otherPlayer = board.X;
+    }
+    //check for a winner in the boardstate, if currPlayer we win, else we lose in this tree
+    var winner = board.getWinner();
+    if(winner == currPlayer){
+      return 1;
+    } else if(winner == otherPlayer){
+      return -1;
+    }
+    //check for a full board and therefore cats game in this true
+    if(board.isFull()){
+      return 0;
+    }
+    //this is where we begin to rank moves, get an array of moves, set alpha low, instantiate parallel
+    //subAlpha list  to movelist to remember move ranks
+    var moveList = board.getMoves();
+    var alpha = -1;
+    var saList = [];
+    for(var i=0; i<moveList.length; i++){
+
+      var boardCopy = board.copy(); //Copy current gamestate
+      boardCopy.move(currPlayer, moveList[i]); //Make a move for in the gamestate for each possible move
+      //console.log(boardCopy.gamestate);
+
+      var subalpha = -this.buildTree_r(boardCopy, otherPlayer, depth + 1); //pass new gamestate into recursion
+      if(alpha < subalpha){ //if move is better than alpha, increase alpha
+        alpha = subalpha;
+      }
+      if(depth == 0){ //only if we are looking at REAL gamestate do we push an alpha to the list (when going through the various board moves)
+        saList.push(subalpha);
+        console.log('In the loop, REAL gamestates (subAlpha value: ', subalpha);
+      }
+    }
+    if(depth == 0){
+      // execute once all moves are evaluated
+      var posMoves = [];
+      for(var n=0; n<saList.length; n++){
+        if(saList[n] == alpha){
+          posMoves.push(moveList[n]);
+        }
+      }
+      console.log('saList: ', saList);
+      console.log('Good moves (posMoves): ', posMoves);
+	  console.log('All(', this.loop, ') possibilities evaluated...');
+      this.bestMove = this.rand(posMoves); //in future pick random..
+    }
+    return alpha;
+  },
+  rand: function(list){
+    return list[Math.floor(Math.random() * list.length)]; // return an item
+  },
+  negamax: function(board, depth, player){
+  this.loop++;
+  /*  === Wiki pseudo code ===
+    if depth = 0 or node is a terminal node
+       return player (1 or -1) * the heuristic value of node
+
+    bestValue := −∞
+    foreach child of node
+      v := −negamax(child, depth − 1, −color)
+      bestValue := max( bestValue, v )
+      return bestValue
+ 
+    === Code example ===
+ 1  const int sign[2]={1,-1}   //0 is blue, 1 is red
+ 2  
+ 3  int NegaMax(Board b, int depth, int color) {
+ 4      if (GameOver(b) or depth>MaxDepth)
+ 5          return sign[color]*Analysis(b)
+ 6      int max = -infinity
+ 7      for each legal move m in board b {
+ 8          copy b to c
+ 9          make move m in board c
+10          int x= - NegaMax(c, depth+1, 1-color)  //Note the "-" before "NegaMax"
+11          if (x>max) max = x
+12      }
+13      return max
+14  }
+    }*/
+    // functions only required when in recursion
+    if ( depth > this.MAX_DEPTH ) {
+    	return 0; 			// only investigate to a certain depth (horizon), when too deep, return in order to make the game fast enough
+    }
+	var winner = board.getWinner();
+	if ( winner != board.empty ) {
+		//console.log(player * board.score(depth));
+		return player * board.score(depth, player);
+		
+	}
+
+    if ( board.isFull() ){
+    	//console.log('board is full');
+    	return 0;					// it's a tie game, no points for either player
+    }
+    // end of recursion only functions
+
+    var bestValue = -100;
+    var moveList = board.getMoves();
+    var MovesValues = [];
+    for(var i=0; i<moveList.length; i++){
+      var boardCopy = board.copy(); //Copy current gamestate
+      boardCopy.move(player, moveList[i]);
+      var v = -this.negamax(boardCopy, depth + 1, -player)
+      bestValue = Math.max( bestValue, v );
+      //console.log('depth: ', depth);
+      //console.log('player: ', player);
+      //console.log('v: ', v);
+      //console.log('bestValue: ',bestValue);
+      //console.log('---------');
+      //console.log(i, ' - bestValue: ', bestValue);
+      
+      if (depth == 0 ) {
+      	// add here what needs to be done when in the loop for a real move
+      	//console.log('Player: ', player);
+      	//console.log(' > --- --- --- --- --- --- --- < ');
+      	console.log('Move: ', moveList[i], ' score: ', bestValue);
+      	//console.log(' > --- --- --- --- --- --- --- < ');
+      	bestValue = -100;
+      	//console.log('Boardstate: ', boardCopy.gamestate);
+      	//console.log('--- --- --- --- ---');
+      }
+
+    }
+
+    if ( depth == 0 ){
+    	// what does the function need to return after all moves have been evaluated
+    	console.log('All(', this.loop, ') possibilities evaluated...');
+    }
+
+    return bestValue;
+  }
+}
+
+
+/*
+board object    which is the node in negamax function
+  value         hold the value for the player at hand
+  winner()      end state of the game, terminal / leaf node
+  moves()       Available moves
+*/
+
+// board object
+var Board = function(){
+  //this.value = 3;
+  this.empty = 0;
+  this.X = 1;             //player x, 1st  player according to negamax 1
+  this.O = -1;            // player o, 2nd player according to negamax -1
+  this.wins = [
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+    [0,4,8],
+    [2,4,6]
+    ];
+  this.gamestate = [0,0,0,0,0,0,0,0,0];
+}
+
+Board.prototype = {
+  copy: function(){
+    var b = new Board();
+    for(var i=0; i<9; i++){
+      b.gamestate[i] = this.gamestate[i];
+    }
+    return b;
+  },
+  move: function(player, pos){
+    this.gamestate[pos] = player;
+  },
+  getMoves: function(){
+    var moves = [];
+    for(var i=0; i<9; i++){
+      if(this.gamestate[i] == this.empty){
+        moves.push(i);
+      }
+    }
+    return moves;
+  },
+  isFull: function(){
+    for(var i=0; i<9; i++){
+      if(this.gamestate[i] == this.empty){
+        return false;
+      }
+    }
+    return true;
+  },
+  getWinner: function(){
+    for(var i=0; i<this.wins.length; i++){
+      var a, b ,c;
+      a = this.gamestate[this.wins[i][0]];
+      b = this.gamestate[this.wins[i][1]];
+      c = this.gamestate[this.wins[i][2]];
+
+      if(a == b && a == c && a != this.empty){
+        return a;
+      }
+    }
+    return this.empty;
+  },
+  score: function(depth, player){
+    return result = player === -1 ? (11 - depth) : (depth - 11);
+    //-1 dept - 10;
+    //1  11 - depth
+    
+    //return 11 - depth;
+  }
+}
+
+// experiment area with the various functions
+
+var cb = function(value){
+  //console.log(b.gamestate);
+  console.log('Chosen move (bestMove): ', value);
+}
+
+
+
+
+var test = {
+	wrong: function(){
+		// The IA in below setup will not choose to put up a fight (block pos 8) until the end, unsure why...
+		var b = new Board();
+		b.move(1,0);					b.move(1,2);
+		b.move(-1,3);	b.move(1,4);	
+		b.move(-1,6);
+
+		var activePlayer = -1;		// = O = AI
+		this.play(b, activePlayer);
+	},
+	AITakesWin: function(){
+		var b = new Board();
+										b.move(1,2);
+		b.move(-1,3);	b.move(1,4);	
+		b.move(-1,6);					b.move(1,8);
+		var activePlayer = -1;		// = O = AI
+		this.play(b, activePlayer);
+	},
+	AIBlocksWin: function(){
+		var b = new Board();
+						b.move(1,1);
+						b.move(1,4);	
+		b.move(-1,6);	b.move(-1,7);	b.move(1,8);
+		var activePlayer = -1;		// = O = AI
+		this.play(b, activePlayer);
+	},
+	AIBlocksWin2: function(){
+		var b = new Board();
+										b.move(1,2);
+						b.move(1,4);	
+		b.move(-1,6);	b.move(-1,7);	b.move(1,8);
+		var activePlayer = -1;		// = O = AI
+		this.play(b, activePlayer);
+	},
+	AIPreventFork: function(){
+		var b = new Board();
+		b.move(1,0);					
+						b.move(-1,4);
+										b.move(1,2);
+		var activePlayer = -1;		// = O = AI
+		this.play(b, activePlayer);		
+	}, 
+
+	play: function(b, activePlayer){
+		console.log( 'Possible moves: ', b.getMoves() );
+		console.log( '< -=== { Own NegaMax procedure  }===- >');
+		mmax.negamax(b, 0, activePlayer); // my own procedure
+		console.log( '< -=== { Other\'s NegaMax procedure } ===- >');	
+		mmax2.buildTree_r(b, activePlayer, 0); // BuildTree_r: function(board, currPlayer, depth)
+	}
+}
+
+var mmax = new MiniMax();
+var mmax2 = new MiniMax();
+//test.wrong();
+test.AIPreventFork();
+//test.AIBlocksWin();
+//test.AIBlocksWin2();
+//mmax.buildTree(b, activePlayer, cb);
+
+
+/*
+
+var moves = b.getMoves();
+for (i = 0; i < moves.length; i++){
+	var boardC = b.copy();
+	boardC.move(activePlayer,moves[i]);
+	console.log('Boardstate: ', boardC.gamestate);
+	console.log('Move: ', moves[i] , ' value: ', mmax.negamax(boardC, 0, activePlayer) );
+}
+console.log('Execution of NegaMax: ', mmax.loop);
+
+*/
+
+/*
+Pseudo code, what needs to be done
+- gather all available moves
+	- make a move
+	- eval the board
+	- add a score to it
+- determine which move has the highest score of all moves
+- output this so the IA can use it
+
+
+*/
+
+
+    </script>
+
+  </head>
+  <body>
+  </body>
+</html>
+
+b.move('o',0); b.move('o',1); /* 0 */
+b.move('o',3); b.move('x',4); /* 0 */
+b.move('x',6); /* 0 */ /* 0 */
+
+Negamax algoritm is anders dan de Minimax
+Tree = game play
+Node = game states
+Root Node = where the game is currently at
+Leaf node = the end of the game
+
+The negamax search objective is to find the node score value for the player who is playing at the root node. (current game point)
