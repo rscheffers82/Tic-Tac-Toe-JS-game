@@ -23,7 +23,7 @@
 var MiniMax = function(){
   //init values and options
   this.bestMove = 0;
-  this.MAX_DEPTH = 7;
+  this.MAX_DEPTH = 8;
   this.loop = 0;
 }
 
@@ -31,11 +31,12 @@ MiniMax.prototype = {
   //function called from game, bestmove will return the computer move
   buildTree: function(board, player, cb){
     this.bestMove = 0;
-    var alpha = this.buildTree_r(board, player, 0);
+    this.buildTree_r(board, player, 0);
     cb(this.bestMove);
   },
   //recursive function to build minimax tree and rate the value of the board
   buildTree_r: function(board, currPlayer, depth){
+  this.loop++;
     if(depth > this.MAX_DEPTH){
       return 0;
     }
@@ -72,20 +73,22 @@ MiniMax.prototype = {
       if(alpha < subalpha){ //if move is better than alpha, increase alpha
         alpha = subalpha;
       }
-      if(depth == 0){ //only if we are looking at REAL gamestate do we push an alpha to the list (when going through the various boards)
+      if(depth == 0){ //only if we are looking at REAL gamestate do we push an alpha to the list (when going through the various board moves)
         saList.push(subalpha);
+        console.log('In the loop, REAL gamestates (subAlpha value: ', subalpha);
       }
     }
     if(depth == 0){
+      // execute once all moves are evaluated
       var posMoves = [];
       for(var n=0; n<saList.length; n++){
         if(saList[n] == alpha){
           posMoves.push(moveList[n]);
         }
       }
-      console.log('posMoves: ', posMoves);
       console.log('saList: ', saList);
-      
+      console.log('Good moves (posMoves): ', posMoves);
+	  console.log('All(', this.loop, ') possibilities evaluated...');
       this.bestMove = this.rand(posMoves); //in future pick random..
     }
     return alpha;
@@ -121,34 +124,47 @@ MiniMax.prototype = {
 13      return max
 14  }
     }*/
+    // functions only required when in recursion
     if ( depth > this.MAX_DEPTH ) {
     	return 0; 			// only investigate to a certain depth (horizon), when too deep, return in order to make the game fast enough
     }
 	var winner = board.getWinner();
 	if ( winner != board.empty ) {
-		return player * board.score(depth);
+		//console.log(player * board.score(depth));
+		return player * board.score(depth, player);
+		
 	}
 
     if ( board.isFull() ){
     	//console.log('board is full');
     	return 0;					// it's a tie game, no points for either player
     }
+    // end of recursion only functions
 
     var bestValue = -100;
     var moveList = board.getMoves();
+    var MovesValues = [];
     for(var i=0; i<moveList.length; i++){
       var boardCopy = board.copy(); //Copy current gamestate
       boardCopy.move(player, moveList[i]);
       var v = -this.negamax(boardCopy, depth + 1, -player)
-      bestValue = Math.max( bestValue, v )
+      bestValue = Math.max( bestValue, v );
+      //console.log('depth: ', depth);
+      //console.log('player: ', player);
+      //console.log('v: ', v);
+      //console.log('bestValue: ',bestValue);
+      //console.log('---------');
       //console.log(i, ' - bestValue: ', bestValue);
       
       if (depth == 0 ) {
       	// add here what needs to be done when in the loop for a real move
-      	console.log('Player: ', player);
+      	//console.log('Player: ', player);
+      	//console.log(' > --- --- --- --- --- --- --- < ');
       	console.log('Move: ', moveList[i], ' score: ', bestValue);
-      	console.log('Boardstate: ', boardCopy.gamestate);
-      	console.log('--- --- --- --- ---');
+      	//console.log(' > --- --- --- --- --- --- --- < ');
+      	bestValue = -100;
+      	//console.log('Boardstate: ', boardCopy.gamestate);
+      	//console.log('--- --- --- --- ---');
       }
 
     }
@@ -230,8 +246,12 @@ Board.prototype = {
     }
     return this.empty;
   },
-  score: function(depth){
-    return 10 - depth;
+  score: function(depth, player){
+    return result = player === -1 ? (11 - depth) : (depth - 11);
+    //-1 dept - 10;
+    //1  11 - depth
+    
+    //return 11 - depth;
   }
 }
 
@@ -239,36 +259,72 @@ Board.prototype = {
 
 var cb = function(value){
   //console.log(b.gamestate);
-  console.log('bestMove: ', value);
+  console.log('Chosen move (bestMove): ', value);
 }
 
 
-var b = new Board();
-// alternates between 0 and 8, because of rand when depth is 0. Unsure why?
-
-//  0 1 2
-//  3 4 5
-//  6 7 8
-//b.move('x',0);  b.move('o',1);  b.move('o',2); 
-//b.move('o',3);  b.move('o',4);      /* 0 */ 
-//b.move('x',6);  /* 0 */         b.move('x',8);
-//player, pos
-
-//  x   ?   ?		0	1	2
-//  ?   o   ?		3	4	5
-//  ?   ?   x 		6	7	8
 
 
-b.move(1,0); 					b.move(-1,2);
-				b.move(-1,4);	b.move(1, 5);
-								b.move(1, 8);					
+var test = {
+	wrong: function(){
+		// The IA in below setup will not choose to put up a fight (block pos 8) until the end, unsure why...
+		var b = new Board();
+		b.move(1,0);					b.move(1,2);
+		b.move(-1,3);	b.move(1,4);	
+		b.move(-1,6);
 
-console.log( 'Possible moves: ', b.getMoves() );
+		var activePlayer = -1;		// = O = AI
+		this.play(b, activePlayer);
+	},
+	AITakesWin: function(){
+		var b = new Board();
+										b.move(1,2);
+		b.move(-1,3);	b.move(1,4);	
+		b.move(-1,6);					b.move(1,8);
+		var activePlayer = -1;		// = O = AI
+		this.play(b, activePlayer);
+	},
+	AIBlocksWin: function(){
+		var b = new Board();
+						b.move(1,1);
+						b.move(1,4);	
+		b.move(-1,6);	b.move(-1,7);	b.move(1,8);
+		var activePlayer = -1;		// = O = AI
+		this.play(b, activePlayer);
+	},
+	AIBlocksWin2: function(){
+		var b = new Board();
+										b.move(1,2);
+						b.move(1,4);	
+		b.move(-1,6);	b.move(-1,7);	b.move(1,8);
+		var activePlayer = -1;		// = O = AI
+		this.play(b, activePlayer);
+	},
+	AIPreventFork: function(){
+		var b = new Board();
+		b.move(1,0);					
+						b.move(-1,4);
+										b.move(1,2);
+		var activePlayer = -1;		// = O = AI
+		this.play(b, activePlayer);		
+	}, 
 
-var activePlayer = -1;
+	play: function(b, activePlayer){
+		console.log( 'Possible moves: ', b.getMoves() );
+		console.log( '< -=== { Own NegaMax procedure  }===- >');
+		mmax.negamax(b, 0, activePlayer); // my own procedure
+		console.log( '< -=== { Other\'s NegaMax procedure } ===- >');	
+		mmax2.buildTree_r(b, activePlayer, 0); // BuildTree_r: function(board, currPlayer, depth)
+	}
+}
+
 var mmax = new MiniMax();
-//mmax.negamax(b, 0, activePlayer);
-mmax.buildTree(b, activePlayer, cb);
+var mmax2 = new MiniMax();
+//test.wrong();
+test.AIPreventFork();
+//test.AIBlocksWin();
+//test.AIBlocksWin2();
+//mmax.buildTree(b, activePlayer, cb);
 
 
 /*
