@@ -4,9 +4,139 @@ $( document ).ready(function() {
 });
 
 var game = (function(){
-	var board = [0,0,0,
-				 0,0,0,
-				 0,0,0];
+	var Board = function(){
+  	//this.value = 3;
+  	this.empty = 0;
+  	this.X = 1;             //player x, 1st  player according to negamax 1
+  	this.O = -1;            // player o, 2nd player according to negamax -1
+  	this.wins = [
+	    [0,1,2],
+    	[3,4,5],
+    	[6,7,8],
+    	[0,3,6],
+    	[1,4,7],
+    	[2,5,8],
+    	[0,4,8],
+    	[2,4,6]
+    	];
+  	this.gamestate = [0,0,0,0,0,0,0,0,0];
+}
+	Board.prototype = {
+	  copy: function(){
+	    var b = new Board();
+	    for(var i=0; i<9; i++){
+	      b.gamestate[i] = this.gamestate[i];
+	    }
+	    return b;
+	  },
+	  move: function(player, pos){
+	    this.gamestate[pos] = player;
+	  },
+	  getMoves: function(){
+	    var moves = [];
+	    for(var i=0; i<9; i++){
+	      if(this.gamestate[i] == this.empty){
+	        moves.push(i);
+	      }
+	    }
+	    return moves;
+	  },
+	  isFull: function(){
+	    for(var i=0; i<9; i++){
+	      if(this.gamestate[i] == this.empty){
+	        return false;
+	      }
+	    }
+	    return true;
+	  },
+	  getWinner: function(){
+	    for(var i=0; i<this.wins.length; i++){
+	      var a, b ,c;
+	      a = this.gamestate[this.wins[i][0]];
+	      b = this.gamestate[this.wins[i][1]];
+	      c = this.gamestate[this.wins[i][2]];
+
+	      if(a == b && a == c && a != this.empty){
+	        return a;
+	      }
+	    }
+	    return this.empty;
+	  },
+	  score: function(depth, player){
+	    return result = player === -1 ? (11 - depth) : (depth - 11);
+	  }
+	}
+
+var MiniMax = function(){
+  //init values and options
+  this.bestMove = 0;
+  this.MAX_DEPTH = 8;
+  this.loop = 0;
+}
+
+MiniMax.prototype = {
+  negamax: function(b, depth, player){
+  	console.log(b);
+  	console.log(depth);
+  	console.log(player);
+  this.loop++;
+    // functions only required when in recursion
+    if ( depth > this.MAX_DEPTH ) {
+    	return 0; 			// only investigate to a certain depth (horizon), when too deep, return in order to make the game fast enough
+    }
+	var winner = b.getWinner();
+	if ( winner != b.empty ) {
+		//console.log(player * board.score(depth));
+		return player * b.score(depth, player);
+	}
+
+    if ( b.isFull() ){
+    	//console.log('board is full');
+    	return 0;					// it's a tie game, no points for either player
+    }
+    // end of recursion only functions
+
+    var bestValue = -100;
+    var moveList = b.getMoves();
+    var MovesValues = [];
+    for(var i=0; i<moveList.length; i++){
+      var boardCopy = b.copy(); //Copy current gamestate
+      boardCopy.move(player, moveList[i]);
+//      var v = -this.negamax(boardCopy, depth + 1, -player)
+      bestValue = Math.max( bestValue, v );
+      //console.log('depth: ', depth);
+      //console.log('player: ', player);
+      //console.log('v: ', v);
+      //console.log('bestValue: ',bestValue);
+      //console.log('---------');
+      //console.log(i, ' - bestValue: ', bestValue);
+      
+      if (depth == 0 ) {
+      	// add here what needs to be done when in the loop for a real move
+      	//console.log('Player: ', player);
+      	//console.log(' > --- --- --- --- --- --- --- < ');
+      	console.log('Move: ', moveList[i], ' score: ', bestValue);
+      	//console.log(' > --- --- --- --- --- --- --- < ');
+      	bestValue = -100;
+      	//console.log('Boardstate: ', boardCopy.gamestate);
+      	//console.log('--- --- --- --- ---');
+      }
+
+    }
+
+    if ( depth == 0 ){
+    	// what does the function need to return after all moves have been evaluated
+    	console.log('All(', this.loop, ') possibilities evaluated...');
+    }
+
+    return bestValue;
+  }
+}
+
+
+
+	var board = new Board();
+	var AIPlayer = new MiniMax();
 	var AI;					// true computer / false 2 players
 	var player = [];		// Object: Name, Icon, Win, Draw
 	var difficulty;			// 0 to 100, 100: player never wins
@@ -23,20 +153,10 @@ var game = (function(){
 	}
 
 	var checkWin = function(icon) {
-		var possWin = [	[0,1,2], [3,4,5], [6,7,8],	// horizontal win
-						[0,3,6], [1,4,7], [2,5,8],	// vertical win
-						[0,4,8], [2,4,6]			// diagonal win
-					  ];
-		var x = 0;
-		var winner = false;
-		while (x < possWin.length && !winner){
-			if ( board[possWin[x][0]] === icon && board[possWin[x][1]] === icon && board[possWin[x][2]] === icon ) {
-				winner = true;
-			}
-			x++;
-		}
+
+		var winner = board.getWinner() != board.empty ? true : false;
 		if (winner) handleWin(icon);
-		else if ( !board.includes(0) ) handleDraw();
+		else if ( board.isFull() ) handleDraw();
 		else turn = turn === 0 ? 1 : 0;
 	}
 	
@@ -109,16 +229,21 @@ var game = (function(){
 				turn = start;					// alternate the first move between players
 			}
 			$('.tile').empty();
-			board = [0,0,0,
-					 0,0,0,
-					 0,0,0];
+			board.gamestate =  [0,0,0,
+					 			0,0,0,
+					 			0,0,0];
 			$('#myBox').css('height', '0%');
 		},
 		fill: function(pos){
-			if ( board[pos] === 0 ){
-				board[pos] = player[turn].icon;
+			if ( board.gamestate[pos] === board.empty ){
+				board.move( player[turn].icon, pos )
+				//board.gamestate[pos] = player[turn].icon;
 				$('#' + pos).append('<img src="images/' + player[turn].icon +'.png">');
 				checkWin(player[turn].icon);
+				// testing
+				if ( player[turn].icon === 'o' ) {
+					AIPlayer.negamax(board, 0, board.O);
+				}
 			}
 		}
 	}
