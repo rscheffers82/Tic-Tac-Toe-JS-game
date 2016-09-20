@@ -185,6 +185,7 @@ MiniMax.prototype = {
 	}
 
 	var	setGameValues = function(){
+		// loads at the rest game or after a reset
 		AI = $('.pl-selected').attr('id');
 		difficulty = $('#difficulty').val();
 		player[0] = {}; player[1] = {};
@@ -211,7 +212,7 @@ MiniMax.prototype = {
 		draw = 0;
 
 		// change icon here
-		if ( player[0].icon === 'x' ) player[0].icon = 1;
+		player[0].icon = ( player[0].icon === 'x' ) ? player[0].icon = 1 : player[0].icon = -1;
 		player[1].icon = -player[0].icon
 		if ( player[0].icon === board.O ) return 1;
 		else return 0;
@@ -250,8 +251,8 @@ MiniMax.prototype = {
 			loadBoard();				// visually load the board
 			//turn = start = 1;			// needed as next game switches players 
 			
-			//loadSingle();				// display single player mode menu which loads nextGame(true) on button click
-    		loadMulti(); // multi-play only, replace this line with the above once single play is working
+			loadSingle();				// display single player mode menu which loads nextGame(true) on button click
+    		//loadMulti(); // multi-play only, replace this line with the above once single play is working
     		$('#myBox').css('height', '100%');
 		},
 		nextGame: function(firstTime){
@@ -267,6 +268,9 @@ MiniMax.prototype = {
 					 			0,0,0,
 					 			0,0,0];
 			$('#myBox').css('height', '0%');
+			if (turn === 1) {
+				AIMove([[0, 2, 4, 6, 8], [1, 3, 5, 7]]); // if the AI is at play, make a move, either a corner or the middle as optimal moves
+			}
 		},
 		fill: function(pos){
 			if ( board.gamestate[pos] === board.empty ){
