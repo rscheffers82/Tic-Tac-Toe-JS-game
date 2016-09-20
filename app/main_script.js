@@ -75,10 +75,10 @@ var MiniMax = function(){
 }
 
 MiniMax.prototype = {
-  negamax: function(b, depth, player){
-  	console.log(b);
-  	console.log(depth);
-  	console.log(player);
+  negamax: function(b, depth, player, cb){
+  	//console.log(b);
+  	//console.log(depth);
+  	//console.log(player);
   this.loop++;
     // functions only required when in recursion
     if ( depth > this.MAX_DEPTH ) {
@@ -98,35 +98,39 @@ MiniMax.prototype = {
 
     var bestValue = -100;
     var moveList = b.getMoves();
-    var MovesValues = [];
+    var moveAndValue = [];
     for(var i=0; i<moveList.length; i++){
       var boardCopy = b.copy(); //Copy current gamestate
       boardCopy.move(player, moveList[i]);
-//      var v = -this.negamax(boardCopy, depth + 1, -player)
+      var v = -this.negamax(boardCopy, depth + 1, -player)
       bestValue = Math.max( bestValue, v );
-      //console.log('depth: ', depth);
-      //console.log('player: ', player);
-      //console.log('v: ', v);
-      //console.log('bestValue: ',bestValue);
-      //console.log('---------');
-      //console.log(i, ' - bestValue: ', bestValue);
+
       
       if (depth == 0 ) {
-      	// add here what needs to be done when in the loop for a real move
-      	//console.log('Player: ', player);
-      	//console.log(' > --- --- --- --- --- --- --- < ');
       	console.log('Move: ', moveList[i], ' score: ', bestValue);
-      	//console.log(' > --- --- --- --- --- --- --- < ');
+      	moveAndValue[ moveList[i] ] = bestValue;		// store the move and the value
+
       	bestValue = -100;
-      	//console.log('Boardstate: ', boardCopy.gamestate);
-      	//console.log('--- --- --- --- ---');
       }
 
     }
-
+    // execute once all available moves have been evaluated and rated
     if ( depth == 0 ){
+    	//console.log('moveAndValue: ', moveAndValue);
+    	var bestMoves = [];
+    	bestMoves[0] = []; 	bestMoves[1] = [];
     	// what does the function need to return after all moves have been evaluated
     	console.log('All(', this.loop, ') possibilities evaluated...');
+    	
+    	var copyMandV = moveAndValue.slice();
+    	copyMandV.sort(function(a, b){return b-a});
+    	var highV = copyMandV[0];
+
+    	for ( var move = 0; move < moveAndValue.length; move++){
+    		if ( moveAndValue[move] === highV ) bestMoves[0].push(move);
+    		else if (moveAndValue[move] !== undefined ) bestMoves[1].push(move);
+    	}
+    	cb(bestMoves);
     }
 
     return bestValue;
@@ -186,6 +190,7 @@ MiniMax.prototype = {
 		player[0] = {}; player[1] = {};
 
 		// load player names 
+		// change icon here
 		player[0].name = $('#player1').val() === '' ? 'Player1' : $('#player1').val();
 		if ( $('#player2').val() === undefined ) player[1].name = 'Computer AI (' + difficulty + ')';
 		else if ( $('#player2').val() === '') player[1].name = 'Player2';
@@ -205,10 +210,39 @@ MiniMax.prototype = {
 		player[1].win = 0;
 		draw = 0;
 
-		if ( player[0].icon === 'o' ) return 1;
+		// change icon here
+		if ( player[0].icon === 'x' ) player[0].icon = 1;
+		player[1].icon = -player[0].icon
+		if ( player[0].icon === board.O ) return 1;
 		else return 0;
 		//console.log(AI);
 		//console.log('player:', player);
+	}
+	var AIMove = function(moves){
+		console.log(moves);
+		game.fill(moves[0][0]);
+		//var copyMoveVsValue = moveVsValue;
+		//copyMoveVsValue.sort( function(a, b) { return a-b } ).reverse();
+		//var best = copyMoveVsValue[0];
+		//console.log(copyMoveVsValue);
+		//console.log(best);
+		//game.fill(best);
+		/*
+		brainstorm on how to fix this
+		move[]
+		moves = {
+			score 			// negamax value
+			board 			// place on the board
+			cat 			// one, optimal, two next, three remaining, random 1 or 2, from there  a move available
+		}
+		Cat one, best value
+		Cat two, all remaining values
+
+		random according to the difficulty level, cat one / cat two
+			then random from the available moves.
+
+		*/
+
 	}
 	// public functions
 	return {
@@ -237,12 +271,13 @@ MiniMax.prototype = {
 		fill: function(pos){
 			if ( board.gamestate[pos] === board.empty ){
 				board.move( player[turn].icon, pos )
-				//board.gamestate[pos] = player[turn].icon;
-				$('#' + pos).append('<img src="images/' + player[turn].icon +'.png">');
+				// change icon here
+				var icon = player[turn].icon === 1 ? 'x' : 'o';
+				$('#' + pos).append('<img src="images/' + icon +'.png">');
 				checkWin(player[turn].icon);
 				// testing
-				if ( player[turn].icon === 'o' ) {
-					AIPlayer.negamax(board, 0, board.O);
+				if ( AI && player[turn].icon === board.O ) {
+					AIPlayer.negamax( board, 0, board.O, AIMove );
 				}
 			}
 		}
