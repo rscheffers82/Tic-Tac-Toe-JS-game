@@ -1,8 +1,7 @@
 $('.overlaybox').on('click', '.pl', function(e){
     // Single / Multi-player selection
-    // multi-play only: remove // from below two lines, once single play is done
-    //if (this.id === 'true') loadSingle();               // AI mode, true
-    //else if (this.id === 'false' ) loadMulti();         // Multi-player mode
+    if (this.id === 'true') loadSingle();               // AI mode, true
+    else if (this.id === 'false' ) loadMulti();         // Multi-player mode
 });
 
 $('.overlaybox').on('click', '.iconSinglePlay' ,function(e){

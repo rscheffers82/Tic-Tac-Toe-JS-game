@@ -69,17 +69,13 @@ var game = (function(){
 
 var MiniMax = function(){
   //init values and options
-  this.bestMove = 0;
+  //this.bestMove = 0;
   this.MAX_DEPTH = 8;
-  this.loop = 0;
 }
 
 MiniMax.prototype = {
   negamax: function(b, depth, player, cb){
-  	//console.log(b);
-  	//console.log(depth);
-  	//console.log(player);
-  this.loop++;
+
     // functions only required when in recursion
     if ( depth > this.MAX_DEPTH ) {
     	return 0; 			// only investigate to a certain depth (horizon), when too deep, return in order to make the game fast enough
@@ -119,8 +115,6 @@ MiniMax.prototype = {
     	//console.log('moveAndValue: ', moveAndValue);
     	var bestMoves = [];
     	bestMoves[0] = []; 	bestMoves[1] = [];
-    	// what does the function need to return after all moves have been evaluated
-    	console.log('All(', this.loop, ') possibilities evaluated...');
     	
     	var copyMandV = moveAndValue.slice();
     	copyMandV.sort(function(a, b){return b-a});
@@ -145,7 +139,7 @@ MiniMax.prototype = {
 	var player = [];		// Object: Name, Icon, Win, Draw
 	var difficulty;			// 0 to 100, 100: player never wins
 	var draw;
-	var turn;				// which player is allowed to make a move
+	var turn;				// which player is allowed to make a move ( 0 = plays first, default x and then 1 = o )
 	var start;				// player 0 starts the game
 
 	// private functions
@@ -185,8 +179,10 @@ MiniMax.prototype = {
 	}
 
 	var	setGameValues = function(){
-		// loads at the rest game or after a reset
+		// loads at the start of the app or after a reset of the game
 		AI = $('.pl-selected').attr('id');
+		console.log('AI (setGameValues): ', AI);
+
 		difficulty = $('#difficulty').val();
 		player[0] = {}; player[1] = {};
 
@@ -216,34 +212,10 @@ MiniMax.prototype = {
 		player[1].icon = -player[0].icon
 		if ( player[0].icon === board.O ) return 1;
 		else return 0;
-		//console.log(AI);
-		//console.log('player:', player);
 	}
 	var AIMove = function(moves){
 		console.log(moves);
 		game.fill(moves[0][0]);
-		//var copyMoveVsValue = moveVsValue;
-		//copyMoveVsValue.sort( function(a, b) { return a-b } ).reverse();
-		//var best = copyMoveVsValue[0];
-		//console.log(copyMoveVsValue);
-		//console.log(best);
-		//game.fill(best);
-		/*
-		brainstorm on how to fix this
-		move[]
-		moves = {
-			score 			// negamax value
-			board 			// place on the board
-			cat 			// one, optimal, two next, three remaining, random 1 or 2, from there  a move available
-		}
-		Cat one, best value
-		Cat two, all remaining values
-
-		random according to the difficulty level, cat one / cat two
-			then random from the available moves.
-
-		*/
-
 	}
 	// public functions
 	return {
@@ -268,7 +240,7 @@ MiniMax.prototype = {
 					 			0,0,0,
 					 			0,0,0];
 			$('#myBox').css('height', '0%');
-			if (turn === 1) {
+			if ( AI && turn === 1 ) {
 				AIMove([[0, 2, 4, 6, 8], [1, 3, 5, 7]]); // if the AI is at play, make a move, either a corner or the middle as optimal moves
 			}
 		},
@@ -280,7 +252,10 @@ MiniMax.prototype = {
 				$('#' + pos).append('<img src="images/' + icon +'.png">');
 				checkWin(player[turn].icon);
 				// testing
-				if ( AI && player[turn].icon === board.O ) {
+				console.log('Turn: ', turn);
+				console.log('Player: ', player[turn].icon);
+				console.log('AI: ', AI);
+				if ( AI && turn === 1 ) {
 					AIPlayer.negamax( board, 0, board.O, AIMove );
 				}
 			}
