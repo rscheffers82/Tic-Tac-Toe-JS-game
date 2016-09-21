@@ -103,7 +103,7 @@ MiniMax.prototype = {
 
       
       if (depth == 0 ) {
-      	console.log('Move: ', moveList[i], ' score: ', bestValue);
+      	//console.log('Move: ', moveList[i], ' score: ', bestValue);
       	moveAndValue[ moveList[i] ] = bestValue;		// store the move and the value
 
       	bestValue = -100;
@@ -112,7 +112,6 @@ MiniMax.prototype = {
     }
     // execute once all available moves have been evaluated and rated
     if ( depth == 0 ){
-    	//console.log('moveAndValue: ', moveAndValue);
     	var bestMoves = [];
     	bestMoves[0] = []; 	bestMoves[1] = [];
     	
@@ -181,9 +180,8 @@ MiniMax.prototype = {
 	var	setGameValues = function(){
 		// loads at the start of the app or after a reset of the game
 		AI = ( $('.pl-selected').attr('id') === 'true' );
-		console.log('AI (setGameValues): ', AI);
 
-		difficulty = $('#difficulty').val();
+		difficulty = parseInt( $('#difficulty').val() );
 		player[0] = {}; player[1] = {};
 
 		// load player names 
@@ -215,7 +213,27 @@ MiniMax.prototype = {
 	}
 	var AIMove = function(moves){
 		console.log(moves);
-		game.fill(moves[0][0]);
+		console.log('Difficulty: ',difficulty);
+		
+		var optimal = rand(difficulty);				// returns 0 for optimal move and 1 for sub-optimal move
+		var move = rand(moves[optimal])				// which move of the optimal or sub-optimal list should be picked
+		if ( move === undefined ) move = rand(moves[0]);		// in case there are no sub-optimal moves
+		console.log('optimal: ', optimal);
+		console.log('move: ', move);
+		game.fill(move);
+	}
+	var rand = function(choices){
+		//console.log('choices: ', typeof choices);
+		if (typeof choices === 'number'){
+			var number = Math.floor( (Math.random() * 100) )
+			console.log(number);
+			var oneOrTwo = number < difficulty ? 0 : 1;
+			return oneOrTwo;
+		}
+		if (typeof choices === 'object') {
+			console.log(choices);
+			return choices[Math.floor(Math.random() * choices.length)]; // return an item
+		}
 	}
 	// public functions
 	return {
@@ -252,9 +270,6 @@ MiniMax.prototype = {
 				$('#' + pos).append('<img src="images/' + icon +'.png">');
 				checkWin(player[turn].icon);
 				// testing
-				console.log('Turn: ', turn);
-				console.log('Player: ', player[turn].icon);
-				console.log('AI: ', typeof AI);
 				if ( AI && turn === 1 ) {
 					AIPlayer.negamax( board, 0, board.O, AIMove );
 				}
