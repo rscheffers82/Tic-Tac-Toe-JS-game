@@ -49,7 +49,7 @@ var game = (function(){
 	    }
 	    return true;
 	  },
-	  getWinner: function(){
+	  getWinner: function(saveWinPosition){
 	    for(var i=0; i<this.wins.length; i++){
 	      var a, b ,c;
 	      a = this.gamestate[this.wins[i][0]];
@@ -57,6 +57,8 @@ var game = (function(){
 	      c = this.gamestate[this.wins[i][2]];
 
 	      if(a == b && a == c && a != this.empty){
+	      	//console.log('saveWinPosition: ', saveWinPosition)
+	      	if ( saveWinPosition ) winningRow = this.wins[i];
 	        return a;
 	      }
 	    }
@@ -80,7 +82,7 @@ MiniMax.prototype = {
     if ( depth > this.MAX_DEPTH ) {
     	return 0; 			// only investigate to a certain depth (horizon), when too deep, return in order to make the game fast enough
     }
-	var winner = b.getWinner();
+	var winner = b.getWinner(false);
 	if ( winner != b.empty ) {
 		//console.log(player * board.score(depth));
 		return player * b.score(depth, player);
@@ -140,6 +142,7 @@ MiniMax.prototype = {
 	var draw;
 	var turn;				// which player is allowed to make a move ( 0 = plays first, default x and then 1 = o )
 	var start;				// player 0 starts the game
+	var winningRow;
 
 	// private functions
 	var loadBoard = function(){
@@ -151,17 +154,18 @@ MiniMax.prototype = {
 
 	var checkWin = function(icon) {
 
-		var winner = board.getWinner() != board.empty ? true : false;
+		var winner = board.getWinner(true) != board.empty ? true : false;
 		if (winner) handleWin(icon);
 		else if ( board.isFull() ) handleDraw();
 		else turn = turn === 0 ? 1 : 0;
 	}
 	
 	var handleWin = function(icon){
-		// Optional - add code for flashing winning line
-		
-		// Take care of the score part
 		var won = player[0].icon === icon ? 0 : 1;
+		// Show a flashing winning line
+		flashWin();
+
+		// Continue and take care of the score part
 		player[won].win++;
 		if ( AI && won === 0 ) upgradeAI();
 
@@ -170,12 +174,20 @@ MiniMax.prototype = {
 	}
 	var handleDraw = function(){
 		// Optional - add code for flashing winning line
-
+		flashDraw();
 		// Take care of the score part
 		draw++;
 		
 		var message = 'Clash of the titans - we have a draw!'
 		showScore(player, draw, message);
+	}
+	var flashWin = function(){
+		$( '#' + winningRow[0] ).empty();
+		$( '#' + winningRow[1] ).empty();
+		$( '#' + winningRow[2] ).empty();
+	}
+	var flashDraw = function(){
+
 	}
 
 	var	setGameValues = function(){
@@ -213,14 +225,14 @@ MiniMax.prototype = {
 		else return 0;
 	}
 	var AIMove = function(moves){
-		console.log(moves);
-		console.log('Difficulty: ',difficulty);
+		//console.log(moves);
+		//console.log('Difficulty: ',difficulty);
 		
 		var optimal = rand(difficulty);				// returns 0 for optimal move and 1 for sub-optimal move
 		var move = rand(moves[optimal])				// which move of the optimal or sub-optimal list should be picked
 		if ( move === undefined ) move = rand(moves[0]);		// in case there are no sub-optimal moves
-		console.log('optimal: ', optimal);
-		console.log('move: ', move);
+		//console.log('optimal: ', optimal);
+		//console.log('move: ', move);
 		game.fill(move);
 	}
 	var upgradeAI = function() {
@@ -230,16 +242,13 @@ MiniMax.prototype = {
 		console.log('AI has now an intelligence of: ', difficulty);
 	}
 	var rand = function(choices){
-		//console.log('choices: ', typeof choices);
-		if (typeof choices === 'number'){
-			var number = Math.floor( (Math.random() * 100) )
-			console.log(number);
-			var oneOrTwo = number < difficulty ? 0 : 1;
-			return oneOrTwo;
+		if (typeof choices === 'number'){									
+			var number = Math.floor( (Math.random() * 100) )		// generate a number between 0 and 100
+			return number < difficulty ? 0 : 1;						// when number < difficutly optimal move, else sub-optimal
+
 		}
-		if (typeof choices === 'object') {
-			console.log(choices);
-			return choices[Math.floor(Math.random() * choices.length)]; // return an item
+		if (typeof choices === 'object') {									// return a move from the option list
+			return choices[Math.floor(Math.random() * choices.length)];
 		}
 	}
 	// public functions
