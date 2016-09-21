@@ -163,7 +163,8 @@ MiniMax.prototype = {
 		// Take care of the score part
 		var won = player[0].icon === icon ? 0 : 1;
 		player[won].win++;
-		
+		if ( AI && won === 0 ) upgradeAI();
+
 		var message = player[won].name + ' you are awesome!';
 		showScore(player, draw, message);
 	}
@@ -187,7 +188,7 @@ MiniMax.prototype = {
 		// load player names 
 		// change icon here
 		player[0].name = $('#player1').val() === '' ? 'Player1' : $('#player1').val();
-		if ( $('#player2').val() === undefined ) player[1].name = 'Computer AI (' + difficulty + ')';
+		if ( $('#player2').val() === undefined ) player[1].name = 'AI (' + difficulty + '/100)';
 		else if ( $('#player2').val() === '') player[1].name = 'Player2';
 		else player[1].name = $('#player2').val()
 
@@ -221,6 +222,12 @@ MiniMax.prototype = {
 		console.log('optimal: ', optimal);
 		console.log('move: ', move);
 		game.fill(move);
+	}
+	var upgradeAI = function() {
+		if ( difficulty <= 80 ) difficulty += 5;
+		else difficulty += 2;
+		player[1].name = 'AI (' + difficulty + '/100)';
+		console.log('AI has now an intelligence of: ', difficulty);
 	}
 	var rand = function(choices){
 		//console.log('choices: ', typeof choices);
