@@ -180,7 +180,7 @@ MiniMax.prototype = {
 
 	var	setGameValues = function(){
 		// loads at the start of the app or after a reset of the game
-		AI = $('.pl-selected').attr('id');
+		AI = ( $('.pl-selected').attr('id') === 'true' );
 		console.log('AI (setGameValues): ', AI);
 
 		difficulty = $('#difficulty').val();
@@ -194,7 +194,7 @@ MiniMax.prototype = {
 		else player[1].name = $('#player2').val()
 
 		// load player icons
-		if (AI === 'true') {
+		if (AI) {
 			player[0].icon = $('.icon-selected').attr('id');
 			player[1].icon = player[0].icon === 'x' ? 'o' : 'x';
 		}
@@ -254,7 +254,7 @@ MiniMax.prototype = {
 				// testing
 				console.log('Turn: ', turn);
 				console.log('Player: ', player[turn].icon);
-				console.log('AI: ', AI);
+				console.log('AI: ', typeof AI);
 				if ( AI && turn === 1 ) {
 					AIPlayer.negamax( board, 0, board.O, AIMove );
 				}
