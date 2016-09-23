@@ -26,8 +26,8 @@ v current state of the game in an array
 v two users should be able to play the game, or user and AI
 v waiting for a move
 v checking for a win
-- AI, analysis of the next move
-	- the more games played the less chance a user has to win (95-5%)
+v AI, analysis of the next move
+	v the more games played the less chance a user has to win (95-5%)
 
 === { To-do list } ===
 - on startup, darken screen and choose
@@ -38,17 +38,17 @@ v checking for a win
 v add x or o choice
 v add settings in code, currently only visual available
 v on win or draw, darken screen and show the message and score
-- understand AI / minimax algorithm or wiki code
-	- write code
-	- addition, AI gets better after more games
-- general styling and background
+v understand AI / minimax algorithm or wiki code, negamax used instead
+	v write code
+	v addition, AI gets better after more games
 v bugfix, multi-player icon selection, disable this
+v flash winning
+- flash draw (all)
+- wait for flashing to finish, bring up messagebox
+	use of promises, https://medium.freecodecamp.com/javascript-promises-explained-by-gambling-at-a-casino-28ad4c5b2573#.smjptjo9l
+- general styling and background
 - check cross browser compatibility
 - post in Facebook and Forums
-
-optional:
-- flash winning
-- flash draw (all)
 
 
 

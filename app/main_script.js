@@ -163,7 +163,7 @@ MiniMax.prototype = {
 	var handleWin = function(icon){
 		var won = player[0].icon === icon ? 0 : 1;
 		// Show a flashing winning line
-		flashWin();
+		flashWin(won);
 
 		// Continue and take care of the score part
 		player[won].win++;
@@ -181,10 +181,33 @@ MiniMax.prototype = {
 		var message = 'Clash of the titans - we have a draw!'
 		showScore(player, draw, message);
 	}
-	var flashWin = function(){
-		$( '#' + winningRow[0] ).empty();
-		$( '#' + winningRow[1] ).empty();
-		$( '#' + winningRow[2] ).empty();
+	var flashWin = function(won){
+		var timer = window.setInterval(blink, 400);
+		var visible = true;
+		var count = 0;
+		
+		function blink() {
+			console.log('Won: ', won);
+			if ( count >= 6 ) {						// after 3 alternations of being visible and hidden, quick.
+				clearInterval(timer); 
+			} else {								// hide or display the icons
+				count++;
+				var icon = player[won].icon === 1 ? 'x' : 'o';
+
+				if (visible) {
+					winningRow.forEach(function(e){
+						$( '#' + e ).empty();
+					})
+				} else {
+					winningRow.forEach(function(e){
+						$( '#' + e ).append('<img src="images/' + icon +'.png">');
+					})
+				}
+				visible = visible === true ? false : true;
+			}
+		}
+
+
 	}
 	var flashDraw = function(){
 
