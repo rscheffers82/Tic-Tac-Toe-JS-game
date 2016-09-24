@@ -15,10 +15,10 @@ Functionality of the app broken up in pieces.
 v draw the board
 v draw x or 0
 v clear board
-- flash winning 
+v flash winning 
 
-- settings menu
-- AI minimax algorithm
+v settings menu
+v AI minimax algorithm
 
 v current state of the game in an array
 	- possible win, for AI

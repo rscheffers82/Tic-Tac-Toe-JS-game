@@ -1,6 +1,15 @@
 // Javascript
 $( document ).ready(function() {
 	game.init();
+	//game.play();
+});
+
+$('.play').on('click', function(){
+	game.play();
+});
+
+$('body').on('click', '.tile', function(event){
+	game.fill(event.currentTarget.id);
 });
 
 var game = (function(){
@@ -145,10 +154,10 @@ MiniMax.prototype = {
 	var winningRow;
 
 	// private functions
-	var loadBoard = function(){
-		$('.board').empty();
+	var loadBoard = function(message){
+		if ( !message ) $('.board').empty();
 		for (i = 0; i < 9; i++){
-			$('.board').append('<div class="tile" id="' + i + '">');
+			$('.board').append('<div class="tile" id="' + i + '"></div>');
 		}
 	}
 
@@ -268,12 +277,13 @@ MiniMax.prototype = {
 	// public functions
 	return {
 		init: function(){
-			loadBoard();				// visually load the board
-			//turn = start = 1;			// needed as next game switches players 
-			
+			loadBoard(true);				// visually load the board
+
+		},
+		play: function(){
 			loadSingle();				// display single player mode menu which loads nextGame(true) on button click
-    		//loadMulti(); // multi-play only, replace this line with the above once single play is working
     		$('#myBox').css('height', '100%');
+    		$('.play').remove();
 		},
 		nextGame: function(firstTime){
 			//console.log('next game');
@@ -307,7 +317,3 @@ MiniMax.prototype = {
 		}
 	}
 })();
-
-$('body').on('click', '.tile', function(event){
-	game.fill(event.currentTarget.id);
-});
