@@ -163,34 +163,12 @@ MiniMax.prototype = {
 	var handleWin = function(icon){
 		var won = player[0].icon === icon ? 0 : 1;
 		// Show a flashing winning line
-		flashWin(won);
-
-		// Continue and take care of the score part
-		player[won].win++;
-		if ( AI && won === 0 ) upgradeAI();
-
-		var message = player[won].name + ' you are awesome!';
-		showScore(player, draw, message);
-	}
-	var handleDraw = function(){
-		// Optional - add code for flashing winning line
-		flashDraw();
-		// Take care of the score part
-		draw++;
-		
-		var message = 'Clash of the titans - we have a draw!'
-		showScore(player, draw, message);
-	}
-	var flashWin = function(won){
-		var timer = window.setInterval(blink, 400);
 		var visible = true;
 		var count = 0;
+		var timer = window.setInterval(blink, 400);
 		
 		function blink() {
-			console.log('Won: ', won);
-			if ( count >= 6 ) {						// after 3 alternations of being visible and hidden, quick.
-				clearInterval(timer); 
-			} else {								// hide or display the icons
+			if ( count < 6 ) {					// hide and display the winning row 3 times (loop 6 times)
 				count++;
 				var icon = player[won].icon === 1 ? 'x' : 'o';
 
@@ -204,13 +182,26 @@ MiniMax.prototype = {
 					})
 				}
 				visible = visible === true ? false : true;
+
+			} else {			// after 3 flashes...
+				clearInterval(timer); 	// stop the timer
+
+				player[won].win++;		// increate score
+				if ( AI && won === 0 ) upgradeAI();	// smarten AI
+				var message = player[won].name + ' you are awesome!';
+				showScore(player, draw, message); // display the score view	
+
 			}
 		}
 
 
 	}
-	var flashDraw = function(){
-
+	var handleDraw = function(){
+		// Take care of the score part
+		draw++;
+		
+		var message = 'Clash of the titans - we have a draw!'
+		showScore(player, draw, message);
 	}
 
 	var	setGameValues = function(){

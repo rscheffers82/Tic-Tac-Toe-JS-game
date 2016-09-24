@@ -43,9 +43,8 @@ v understand AI / minimax algorithm or wiki code, negamax used instead
 	v addition, AI gets better after more games
 v bugfix, multi-player icon selection, disable this
 v flash winning
-- flash draw (all)
-- wait for flashing to finish, bring up messagebox
-	use of promises, https://medium.freecodecamp.com/javascript-promises-explained-by-gambling-at-a-casino-28ad4c5b2573#.smjptjo9l
+x flash draw (all)
+v wait for flashing to finish, bring up messagebox
 - general styling and background
 - check cross browser compatibility
 - post in Facebook and Forums
