@@ -91,7 +91,7 @@ var showScore = function(player, draw, message){
         	'</div>' +
 	    '</div>' +
     	'<button type="button" onclick="game.nextGame()">Play again...</button>' +
-    	'<button type="button" onclick="game.init()">Reset</button>' +
+    	'<button type="button" onclick="game.play()">Reset</button>' +
     '</div>';
     $('.overlaybox').append(title + content);
 

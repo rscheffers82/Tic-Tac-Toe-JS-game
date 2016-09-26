@@ -1,6 +1,6 @@
 // Javascript
 $( document ).ready(function() {
-	game.init();
+	game.init(true);
 	//game.play();
 });
 
@@ -278,7 +278,6 @@ MiniMax.prototype = {
 	return {
 		init: function(){
 			loadBoard(true);				// visually load the board
-
 		},
 		play: function(){
 			loadSingle();				// display single player mode menu which loads nextGame(true) on button click
