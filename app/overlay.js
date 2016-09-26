@@ -28,7 +28,7 @@ var loadSingle = function(){
         '<p class="note">* x starts the first game</p>' +
         '<p>Difficulty: ' +
             '<select id="difficulty">' +
-                '<option value="100">UNBEATABLE:        It is your destiny to loose</option>' +
+                '<option value="100">UNBEATABLE:        It is your destiny to lose</option>' +
                 '<option value="90">HARD:               Face a butt-kicking AI</option>' +
                 '<option selected value="70">MEDIUM:    AI lets you win once in a while ;)</option>' +
                 '<option value="50">EASY:               If you are lacking courage</option>' +
