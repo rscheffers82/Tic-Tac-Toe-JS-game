@@ -1,0 +1,7 @@
+node_modules/
+dev/
+node_modules/
+app/
+gulpfile.js
+Notes.txt
+package.json
