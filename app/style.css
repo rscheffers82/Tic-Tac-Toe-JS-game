@@ -73,7 +73,7 @@ body {
 
 .tile {
   display: inline-block;
-  background-color: #00ff22;
+  background-color: #363E84;
   background-image: linear-gradient(#fafafc 2px, #363E84 20px, #fafafc 90px);
   width: 100px;
   height: 100px;
@@ -89,7 +89,7 @@ body {
   font-size: 1.5em;
   margin: 0 auto;
   max-width: 300px;
-  padding: 10px;
+  padding: 5px;
   position: relative;
   text-align: center;
   width: 100%;
@@ -129,7 +129,7 @@ select {
   top: 0;
   left: 0;
   background-color: black;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.6);
   overflow-x: hidden;
   transition: 0.5s; }
 
@@ -191,12 +191,12 @@ select {
   transition: 0.5s; }
 
 .iconSinglePlay:hover {
-  border: 1px solid #222223;
+  border: 1px solid #171A38;
   border-radius: 10px;
   cursor: pointer; }
 
 .icon-selected {
-  border: 1px solid #222223;
+  border: 1px solid #171A38;
   border-radius: 10px;
   background-color: #ececef;
   cursor: default;
