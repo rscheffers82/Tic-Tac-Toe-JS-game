@@ -45,9 +45,9 @@ v bugfix, multi-player icon selection, disable this
 v flash winning
 x flash draw (all)
 v wait for flashing to finish, bring up messagebox
-- general styling and background
-- check cross browser compatibility
-- post in Facebook and Forums
+v general styling and background
+v check cross browser compatibility
+v post in Facebook and Forums
 
 
 
