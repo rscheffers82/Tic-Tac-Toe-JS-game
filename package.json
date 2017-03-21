@@ -18,6 +18,8 @@
   "homepage": "https://github.com/rscheffers82/Tic-Tac-Toe-JS-game#readme",
   "devDependencies": {
     "browser-sync": "^2.13.0",
+    "eslint": "^3.18.0",
+    "eslint-config-recommended": "^11.1.1",
     "gulp": "^3.9.1",
     "gulp-sass": "^2.3.2"
   }
